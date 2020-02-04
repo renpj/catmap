@@ -344,26 +344,10 @@ class GeneralizedLinearScaler(ScalerBase):
             :TODO:
         """
         E_dict = {}
-        full_descriptors = list(descriptors) + [1]
-        if self.coefficient_matrix is None:
-            self.coefficient_matrix = self.get_coefficient_matrix()
 
-        adsorption_energies = np.dot(self.coefficient_matrix,full_descriptors)
-
-        n_ads = len(self.adsorbate_names)
-        for sp in self.species_definitions:
-            if sp in self.adsorbate_names:
-                idx = self.adsorbate_names.index(sp)
-                E_dict[sp] = adsorption_energies[idx]
-            elif sp in self.transition_state_names:
-                idx = self.transition_state_names.index(sp)
-                E_dict[sp] = adsorption_energies[idx+n_ads]
-            elif self.species_definitions[sp].get('type',None) in ['site','gas']:
-                E_dict[sp] = self.species_definitions[sp]['formation_energy']
-
-        if self.avoid_scaling == True: #Check to see if the descriptors 
-            #corrsepond to a surface. If so, return all possible energies 
-            #for that surface instead of using scaling.
+        if self.avoid_scaling: # Check to see if the descriptors
+            # correspond to a surface. If so, return all possible energies
+            # for that surface instead of using scaling.
             n = self.descriptor_decimal_precision
             if not n: n = 2
             roundvals = []
@@ -371,15 +355,34 @@ class GeneralizedLinearScaler(ScalerBase):
                 roundvals.append([round(di,n) for di in ds])
             if [round(di,n) for di in descriptors] in roundvals:
                 for surf in self.descriptor_dict:
-                    if ([round(di,n) for di in self.descriptor_dict[surf]] 
+                    if ([round(di,n) for di in self.descriptor_dict[surf]]
                             == [round(di,n) for di in descriptors]):
                         surf_id = self.surface_names.index(surf)
                 for ads in self.adsorbate_names+self.transition_state_names:
                     E = self.parameter_dict[ads][surf_id]
-                    if E != None:
+                    if E is not None:
                         E_dict[ads] = E
             else:
-                pass #do nothing if the descriptors do not correspond to a surf
+                pass  # do nothing if the descriptors do not correspond to a surf
+        else: # normal scaling
+            full_descriptors = list(descriptors) + [1]
+            if self.coefficient_matrix is None:
+                self.coefficient_matrix = self.get_coefficient_matrix()
+
+            adsorption_energies = np.dot(self.coefficient_matrix,full_descriptors)
+
+            n_ads = len(self.adsorbate_names)
+            for sp in self.species_definitions:
+                if sp in self.adsorbate_names:
+                    idx = self.adsorbate_names.index(sp)
+                    E_dict[sp] = adsorption_energies[idx]
+                elif sp in self.transition_state_names:
+                    idx = self.transition_state_names.index(sp)
+                    E_dict[sp] = adsorption_energies[idx+n_ads]
+
+        for sp in self.species_definitions:
+            if self.species_definitions[sp].get('type',None) in ['site','gas']:
+                E_dict[sp] = self.species_definitions[sp]['formation_energy']
 
         for dname in self.descriptor_names:
             if dname in E_dict:
