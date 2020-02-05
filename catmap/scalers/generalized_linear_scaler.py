@@ -348,6 +348,7 @@ class GeneralizedLinearScaler(ScalerBase):
         if self.avoid_scaling: # Check to see if the descriptors
             # correspond to a surface. If so, return all possible energies
             # for that surface instead of using scaling.
+            self.parameterize()
             n = self.descriptor_decimal_precision
             if not n: n = 2
             roundvals = []

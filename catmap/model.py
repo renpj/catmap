@@ -239,7 +239,6 @@ class ReactionModel:
         if not hasattr(self, 'stdout'):
             # Any re-loaded model will have stdout.
             has_all = False
-
         if self._solved == self._token() and \
            not getattr(self, 'recalculate', None):
             # Do not solve the same model twice.
@@ -261,7 +260,7 @@ class ReactionModel:
                     ran_dsa = True
 
             # Get rates at single points.
-            if getattr(self, 'descriptors', None):
+            if getattr(self, 'descriptors', None) is not None:  # descriptors can be empty list
                 self.single_point_analysis(self.descriptors)
             # Get rates at multiple points.
             if getattr(self, 'descriptor_values', None):
