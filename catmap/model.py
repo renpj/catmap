@@ -1156,7 +1156,7 @@ class ReactionModel:
                     not callable(getattr(self,attr)) and
                     attr not in self._classes and
                     not inspect.ismodule(getattr(self,attr))):
-                print(attr)
+                #print(attr)
                 val = repr(getattr(self,attr))
                 new_line = ''
                 if attr not in self._pickle_attrs:

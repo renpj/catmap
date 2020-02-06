@@ -117,7 +117,10 @@ class MinResidMapper(MapperBase):
         params = self.scaler.get_rxn_parameters(descriptors)
         self._rxn_parameters = params
         if not args and 'c0' not in kwargs:
-            initial_guesses = self.get_initial_coverage_from_map(descriptors)
+            try:
+                initial_guesses = self.get_initial_coverage_from_map(descriptors)
+            except:
+                initial_guesses = self.get_initial_coverage(descriptors)
             for i,ci in enumerate(initial_guesses):
                 kwargs['c0'] = ci
                 cvgs = None
