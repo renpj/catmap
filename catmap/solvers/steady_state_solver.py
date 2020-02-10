@@ -280,19 +280,17 @@ class SteadyStateSolver(MeanFieldSolver):
 
         return boltz_cvgs
 
-    def get_residual(self, coverages,
-            validate_coverages = True, refresh_rate_constants = True):
+    def get_residual(self, coverages, validate_coverages=True, refresh_rate_constants=True):
         """
             :TODO:
         """
 
-        if validate_coverages == True:
+        if validate_coverages:
             coverages = self.constrain_coverages(coverages)
         self._coverage = coverages
-        if refresh_rate_constants == True:
-            self._rxn_parameters = self.scaler.get_rxn_parameters(
-                    self._descriptors)
-            self.get_rate_constants(self._rxn_parameters,coverages)
+        if refresh_rate_constants:
+            self._rxn_parameters = self.scaler.get_rxn_parameters(self._descriptors)
+            self.get_rate_constants(self._rxn_parameters, coverages)
 #        cvg_rates = self.steady_state_function(None)
         cvg_rates = self.steady_state_function(coverages)
         residual = max([abs(r) for r in cvg_rates])
@@ -317,17 +315,20 @@ class SteadyStateSolver(MeanFieldSolver):
             self._steady_state_memoize[memo] = c
             return c
 
-    def ideal_steady_state_function(self,coverages):
+    def ideal_steady_state_function(self, coverages):
         """
             :TODO:
         """
 
-        memo = tuple(self._kf) + tuple(self._kr) + tuple(coverages) + tuple(self.gas_pressures+[self.temperature])
+        memo = tuple(self._kf) \
+               + tuple(self._kr) \
+               + tuple(coverages) \
+               + tuple(self.gas_pressures+[self.temperature])
         if memo in self._steady_state_memoize:
             return self._steady_state_memoize[memo]
         else:
             c = self.ideal_mean_field_steady_state(
-                    self._kf,self._kr,coverages,self.gas_pressures,
+                    self._kf, self._kr, coverages, self.gas_pressures,
                     self._mpfloat, self._matrix)
             self._steady_state_memoize[memo] = c
             return c

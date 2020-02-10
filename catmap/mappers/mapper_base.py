@@ -89,7 +89,7 @@ class MapperBase(ReactionModelWrapper):
         self.solver.compile()
         self._output_variables = [v for v in self.output_variables]
         if True in [v in self._solver_output for v in self.output_variables]:
-            #determines whether or not solver is needed
+            # determines whether or not solver is needed
             if 'coverage' not in self._output_variables:
                 self._output_variables = ['coverage'] + self._output_variables
                 self._coverage_map = None
@@ -106,7 +106,7 @@ class MapperBase(ReactionModelWrapper):
                 setattr(self,out+'_map',val)
                 ismapped = True
 
-        if ismapped == False:
+        if not ismapped:
             d1Vals, d2Vals = self.process_resolution()
             for d1V in d1Vals:
                 for d2V in d2Vals:
@@ -120,14 +120,14 @@ class MapperBase(ReactionModelWrapper):
             map_dict = getattr(self,'_'+out+'_temp',[])
             mapp = []
             for key in map_dict:
-                mapp.append([eval(key),map_dict[key]])
-            setattr(self,out+'_map',mapp)
+                mapp.append([eval(key), map_dict[key]])
+            setattr(self, out+'_map', mapp)
 
-            if getattr(self,out+'_map_file'):
-                outfile = getattr(self,out+'_map_file')
-                self.save_map(mapp,outfile)
+            if getattr(self, out+'_map_file'):
+                outfile = getattr(self, out+'_map_file')
+                self.save_map(mapp, outfile)
     
-    def process_resolution(self, descriptor_ranges = None, resolution = None):
+    def process_resolution(self, descriptor_ranges=None, resolution=None):
         if not descriptor_ranges:
             descriptor_ranges = self.descriptor_ranges
         if resolution is None:
