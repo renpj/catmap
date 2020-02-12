@@ -90,15 +90,12 @@ class ParserBase(ReactionModelWrapper):
                     self.species_definitions['*_' + species] = ads_info
 
         for species in self.species_definitions.keys():  # set site definitions
-            ##This entire block can probably be deleted since sites are now
+            # This entire block can probably be deleted since sites are now
             # handled in the above section. Wait for a version or 2 to let
             # the clauses deprecate...
             site = self.species_definitions[species].get('site', None)
             if site and site not in self.species_definitions:
-                ads_info = {}
-                ads_info['type'] = 'site'
-                ads_info['site'] = site
-                ads_info['formation_energy'] = 0
+                ads_info = {'type': 'site', 'site': site, 'formation_energy': 0}
                 if site not in self._gas_sites:
                     ads_info['n_sites'] = 1
                 else:

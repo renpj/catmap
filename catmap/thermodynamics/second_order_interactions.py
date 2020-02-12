@@ -13,7 +13,7 @@ except ImportError:
     integrate = None
 
 class SecondOrderInteractions(FirstOrderInteractions,ReactionModelWrapper):
-    """Class for implementing 'first-order adsorbate interaction model. 
+    """Class for implementing 'second-order adsorbate interaction model.
     Should be sub-classed by scaler."""
 
     def __init__(self,reaction_model=None):

@@ -3,7 +3,7 @@ import numpy as np
 
 class ConcentrationScaler(ScalerBase):
     """Scaler which uses concentrations (fractions) as descriptors and 
-    treates energetics as a constant"""
+    treats energetics as a constant"""
     def __init__(self,reaction_model=None):
         ScalerBase.__init__(self,reaction_model)       
 

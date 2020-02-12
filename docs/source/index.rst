@@ -24,7 +24,6 @@ list <https://mailman.stanford.edu/mailman/listinfo/mkm-developers>`__.
    topics/index
    reference/catmap
    troubleshooting/index
-   troubleshooting/faq
 
 
 

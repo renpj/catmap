@@ -1,38 +1,42 @@
-from .analysis_base import *
+from .analysis_base import MechanismPlot, MapPlot
 import numpy as np
 from math import log
 from catmap.functions import convert_formation_energies
+from catmap import ReactionModelWrapper
+
 try:
     from graphviz import Digraph
 except ImportError:
     print('Warning! graphviz not imported.')
 from itertools import chain, product
 
-class MechanismAnalysis(MechanismPlot,ReactionModelWrapper,MapPlot):
+
+class MechanismAnalysis(MechanismPlot, ReactionModelWrapper, MapPlot):
     """
       A simple tool for the generation of potential energy diagrams
       from a reaction network.
     """
-    def __init__(self,reaction_model=None):
+
+    def __init__(self, reaction_model=None):
         """
         Class for generating potential energy diagrams.
 
         :param reaction_model: The ReactionModel object to load.
         """
         self._rxm = reaction_model
-        defaults = {'pressure_correction':True,
-                    'min_pressure':1e-12,
-                    'energy_type':'free_energy',
-                    'include_labels':False,
-                    'subplots_adjust_kwargs':{},
-                    'line_offset':0,
-                    'kwarg_dict':{}}
+        defaults = {'pressure_correction': True,
+                    'min_pressure': 1e-12,
+                    'energy_type': 'free_energy',
+                    'include_labels': False,
+                    'subplots_adjust_kwargs': {},
+                    'line_offset': 0,
+                    'kwarg_dict': {}}
         self._rxm.update(defaults)
         self.data_dict = {}
-        MechanismPlot.__init__(self,[0])
+        MechanismPlot.__init__(self, [0])
 
-    def plot(self,ax=None,plot_variants=None,mechanisms=None,
-            labels=None,save=True):
+    def plot(self, ax=None, plot_variants=None, mechanisms=None,
+             labels=None, save=True):
         """
         Generates the potential energy diagram plot
 
@@ -71,13 +75,13 @@ class MechanismAnalysis(MechanismPlot,ReactionModelWrapper,MapPlot):
             v_min, v_max = self.descriptor_ranges[voltage_idx]
             plot_variants = np.linspace(v_min, v_max, 5)
         if not self.plot_variant_colors:
-            self.plot_variant_colors = get_colors(max(len(plot_variants),len(mechanisms)))
+            self.plot_variant_colors = get_colors(max(len(plot_variants), len(mechanisms)))
 
         self.kwarg_list = []
         for key in self.rxn_mechanisms.keys():
-            self.kwarg_list.append(self.kwarg_dict.get(key,{}))
+            self.kwarg_list.append(self.kwarg_dict.get(key, {}))
 
-        for n,mech in enumerate(mechanisms):
+        for n, mech in enumerate(mechanisms):
             for i, variant in enumerate(plot_variants):
                 if self.descriptor_dict:
                     xy = self.descriptor_dict[variant]
@@ -85,11 +89,11 @@ class MechanismAnalysis(MechanismPlot,ReactionModelWrapper,MapPlot):
                     voltage_idx = self.descriptor_names.index('voltage')
                     xy = [0, 0]
                     xy[voltage_idx] = variant
-                    xy[1-voltage_idx] = self.descriptor_ranges[1-voltage_idx][0]
+                    xy[1 - voltage_idx] = self.descriptor_ranges[1 - voltage_idx][0]
                 else:
                     xy = variant
                 if '-' not in xy:
-                    self.thermodynamics.current_state = None #force recalculation
+                    self.thermodynamics.current_state = None  # force recalculation
                     self._rxm._descriptors = xy
 
                     if self.energy_type == 'free_energy':
@@ -105,7 +109,7 @@ class MechanismAnalysis(MechanismPlot,ReactionModelWrapper,MapPlot):
                     elif self.energy_type == 'entropy':
                         energy_dict = self.scaler.get_entropies(xy)
                         for k in energy_dict.keys():
-                            energy_dict[k] *= self.temperature 
+                            energy_dict[k] *= self.temperature
 
                     elif self.energy_type == 'interacting_energy':
 
@@ -113,9 +117,9 @@ class MechanismAnalysis(MechanismPlot,ReactionModelWrapper,MapPlot):
                             raise ValueError('No interacting energy map found.')
                         G_dict = {}
                         G_labels = self.output_labels['interacting_energy']
-                        xyo = self.nearest_mapped_point(self.interacting_energy_map,xy)
+                        xyo = self.nearest_mapped_point(self.interacting_energy_map, xy)
                         if xyo != xy:
-                            print('Warning: No output at: '+str(xy)+'. Using output from: '+str(xyo))
+                            print('Warning: No output at: ' + str(xy) + '. Using output from: ' + str(xyo))
                         xy = xyo
                         self._rxm._descriptors = xyo
 
@@ -123,15 +127,15 @@ class MechanismAnalysis(MechanismPlot,ReactionModelWrapper,MapPlot):
                         for pt, energies in self.interacting_energy_map:
                             if pt == xy:
                                 valid = True
-                                for ads,E in zip(G_labels, energies):
+                                for ads, E in zip(G_labels, energies):
                                     G_dict[ads] = E
                         if valid == False:
-                            raise UserWarning('No coverages found for '+xy+' in map')
+                            raise UserWarning('No coverages found for ' + xy + ' in map')
 
                         if not G_dict:
                             raise ValueError('No energies found for point: ', xy)
 
-                        energy_dict = self.scaler.get_free_energies(xy) #get gas G's
+                        energy_dict = self.scaler.get_free_energies(xy)  # get gas G's
                         energy_dict.update(G_dict)
 
                     if self.pressure_correction == True:
@@ -139,10 +143,10 @@ class MechanismAnalysis(MechanismPlot,ReactionModelWrapper,MapPlot):
                             if key.endswith('_g'):
                                 P = self.gas_pressures[self.gas_names.index(key)]
                                 if P > 0.:
-                                    energy_dict[key] += self._kB*self.temperature*log(P)
+                                    energy_dict[key] += self._kB * self.temperature * log(P)
                                 else:
                                     pass
-                   
+
                     if self.coverage_correction == True:
                         if not self.coverage_map:
                             raise UserWarning('No coverage map found.')
@@ -151,12 +155,12 @@ class MechanismAnalysis(MechanismPlot,ReactionModelWrapper,MapPlot):
                         for pt, cvgs in self.coverage_map:
                             if pt == xy:
                                 valid = True
-                                for ads,cvg in zip(cvg_labels, cvgs):
-                                    energy_dict[ads] += self._kB*self.temperature*log(
-                                                                            float(cvg))
+                                for ads, cvg in zip(cvg_labels, cvgs):
+                                    energy_dict[ads] += self._kB * self.temperature * log(
+                                        float(cvg))
                         if valid == False:
-                            raise UserWarning('No coverages found for '+str(xy)+' in map')
-                    
+                            raise UserWarning('No coverages found for ' + str(xy) + ' in map')
+
                     a = self._enthalpy_dict
                     params = self.adsorption_to_reaction_energies(energy_dict)
                     self.energies = [0]
@@ -164,31 +168,31 @@ class MechanismAnalysis(MechanismPlot,ReactionModelWrapper,MapPlot):
                     self.labels = ['']
                     if len(plot_variants) > 1:
                         self.energy_line_args['color'] = \
-                                self.barrier_line_args['color'] = \
-                                self.plot_variant_colors[i]
+                            self.barrier_line_args['color'] = \
+                            self.plot_variant_colors[i]
                     else:
                         self.energy_line_args['color'] = \
-                                self.barrier_line_args['color'] = \
-                                self.plot_variant_colors[n]
+                            self.barrier_line_args['color'] = \
+                            self.plot_variant_colors[n]
                     for step in mech:
 
                         if str(step).startswith('half'):
-                            step = int(step.replace('half',''))
+                            step = int(step.replace('half', ''))
                             split = True
                         else:
                             split = False
 
                         if step < 0:
                             reverse = True
-                            step = step*-1
+                            step = step * -1
                         else:
                             reverse = False
-                        p = params[step-1]
+                        p = params[step - 1]
                         if reverse == True:
-                            nrg = -1*p[0]
+                            nrg = -1 * p[0]
                             bar = p[1] + nrg
 
-                            species = self.elementary_rxns[step-1][0]
+                            species = self.elementary_rxns[step - 1][0]
                             L = self.label_maker(species)
                             self.labels.append(L)
 
@@ -196,23 +200,23 @@ class MechanismAnalysis(MechanismPlot,ReactionModelWrapper,MapPlot):
                             nrg = p[0]
                             bar = p[1]
 
-                            species = self.elementary_rxns[step-1][-1]
+                            species = self.elementary_rxns[step - 1][-1]
                             L = self.label_maker(species)
                             if split:
                                 L = L.strip()
                                 if L.startswith('2'):
                                     L = L[1:]
                                 else:
-                                    L = r'$\frac{1}{2}$'+L
-                                L = ' '+L #add padding back.
+                                    L = r'$\frac{1}{2}$' + L
+                                L = ' ' + L  # add padding back.
                             self.labels.append(L)
 
                         if split == False:
                             self.energies.append(nrg)
                             self.barriers.append(bar)
                         elif split == True:
-                            self.energies.append(0.5*nrg)
-                            self.barriers.append(0) #split steps cannot have barriers.
+                            self.energies.append(0.5 * nrg)
+                            self.barriers.append(0)  # split steps cannot have barriers.
 
                     if labels and self.include_labels:
                         self.labels = labels
@@ -221,19 +225,19 @@ class MechanismAnalysis(MechanismPlot,ReactionModelWrapper,MapPlot):
                     else:
                         self.labels = []
 
-                    for e, e_a,rxn in zip(self.energies[1:],self.barriers,mech):
+                    for e, e_a, rxn in zip(self.energies[1:], self.barriers, mech):
                         if rxn < 0:
                             reverse = True
-                            rxn = rxn*-1
+                            rxn = rxn * -1
                         else:
                             reverse = False
                     self.data_dict[list(self.rxn_mechanisms.keys())[n]] = [self.energies,
-                            self.barriers]
+                                                                           self.barriers]
 
                     kwargs = self.kwarg_list[n]
                     for key in kwargs:
-                        setattr(self,key,kwargs[key])
-                    
+                        setattr(self, key, kwargs[key])
+
                     self.initial_energy += self.line_offset
                     self.draw(ax)
 
@@ -242,43 +246,43 @@ class MechanismAnalysis(MechanismPlot,ReactionModelWrapper,MapPlot):
         elif self.energy_type == 'potential_energy':
             ax.set_ylabel('$\Delta E$ [eV]')
         elif self.energy_type == 'enthalpy':
-                    ax.set_ylabel('$\Delta H$ [eV]')
+            ax.set_ylabel('$\Delta H$ [eV]')
         elif self.energy_type == 'entropy':
-                    ax.set_ylabel('$T\Delta S$ [eV]')            
+            ax.set_ylabel('$T\Delta S$ [eV]')
         if self.energy_type == 'interacting_energy':
             ax.set_ylabel('$\Delta G_{interacting}$ [eV]')
         fig.subplots_adjust(**self.subplots_adjust_kwargs)
-        MapPlot.save(self,fig,
-                save=save,default_name=self.model_name+'_pathway.pdf')
+        MapPlot.save(self, fig,
+                     save=save, default_name=self.model_name + '_pathway.pdf')
         self._fig = fig
         self._ax = ax
         return fig
 
-    def label_maker(self,species):
+    def label_maker(self, species):
         """
         .. todo:: __doc__
         """
-        species = [s for s in species if self.species_definitions[s].get('type',None) not in 'site']
+        species = [s for s in species if self.species_definitions[s].get('type', None) not in 'site']
         new_species = []
         for sp in species:
-            name,site = sp.split('_')
-            for kj in range(0,9):
-                name = name.replace(str(kj), '$_{'+str(kj)+'}$')
+            name, site = sp.split('_')
+            for kj in range(0, 9):
+                name = name.replace(str(kj), '$_{' + str(kj) + '}$')
             if site == 'g':
-                new_species.append(name+'(g)')
+                new_species.append(name + '(g)')
             else:
-                new_species.append(name+'*')
+                new_species.append(name + '*')
         species_set = list(set(new_species))
         if species_set != new_species:
-            species = [str(new_species.count(sp))+sp for sp in species_set]
+            species = [str(new_species.count(sp)) + sp for sp in species_set]
         else:
             species = new_species
 
         L = '+'.join(species)
-        return ' '+L
+        return ' ' + L
 
     def create_graph(self, mechanism=None, filename=None,
-                     exclude_sites = True, exclude_ts = False):
+                     exclude_sites=True, exclude_ts=False):
         """
         Creates a directed acyclic graph corresponding
         to the reaction nework.  Leaves out the surface
@@ -295,7 +299,7 @@ class MechanismAnalysis(MechanismPlot,ReactionModelWrapper,MapPlot):
                            transition states from graph
         """
         if mechanism is not None:
-            el_rxns = [self.elementary_rxns[i] for i in 
+            el_rxns = [self.elementary_rxns[i] for i in
                        set(self.rxn_mechanisms.get(mechanism))]
         else:
             el_rxns = self.elementary_rxns
@@ -318,7 +322,7 @@ class MechanismAnalysis(MechanismPlot,ReactionModelWrapper,MapPlot):
             if exclude_ts:
                 el_rxn.pop(1)
             for n in range(len(el_rxn) - 1):
-                for path in product(el_rxn[n], el_rxn[n+1]):
+                for path in product(el_rxn[n], el_rxn[n + 1]):
                     if set(path) < set(species):
                         dot.edge(*path)
 
