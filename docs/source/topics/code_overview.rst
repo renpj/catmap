@@ -70,39 +70,39 @@ Code Structure
    *ReactionModel* as a "toolbox" where all the necessary information
    and common functions are stored.
 
--   The *Parser* class serves to extend the "setup file" by reading in
-    various quantities from an "input file". Technically the use of a parser
-    is optional, but in practice it is extremely helpful for reading in
-    common data such as adsorption energies or vibrational frequencies
-    rather than re-typing them for every reaction model.
+-  The *Parser* class serves to extend the "setup file" by reading in
+   various quantities from an "input file". Technically the use of a parser
+   is optional, but in practice it is extremely helpful for reading in
+   common data such as adsorption energies or vibrational frequencies
+   rather than re-typing them for every reaction model.
 
 The process of creating a "descriptor map" is abstracted into three
 general processes, which are handled by the following classes within the
 kinetics module:
 
-*Scaler:* Projects descriptor space into parameter space: *D* → *P*
+``Scaler``: Projects descriptor space into parameter space: *D* → *P*
 
-*Solver:* Maps parameter space into reaction rates: *P* → *r*
+``Solver``: Maps parameter space into reaction rates: *P* → *r*
 
-*Mapper:* Moves through descriptor space. This becomes important for
+``Mapper``: Moves through descriptor space. This becomes important for
 practical reasons since it is often necessary to use a solution at one
 point in descriptor space as an initial guess for a nearby point.
 
-The *ThermoCorrections* class is responsible for applying thermodynamic
+The ``ThermoCorrections`` class is responsible for applying thermodynamic
 corrections to the electronic energies which are used as direct inputs.
 This includes the contributions of entropy/enthalpy and zero-point
 energy due to temperature, pressure, or other thermodynamic variables.
 
 There are also a variety of analysis classes which allow for automated
 analysis and visualization of the reaction model. These include the
-*VectorMap* and *MatrixMap* classes which create plots of outputs as a
-function of descriptor space. The *VectorMap* class is designed for
+``VectorMap`` and ``MatrixMap`` classes which create plots of outputs as a
+function of descriptor space. The ``VectorMap`` class is designed for
 outputs in the form of vectors (rates, coverages, etc.) while the
-*MatrixMap* is designed for outputs in the form of matrices (rate
+``MatrixMap`` is designed for outputs in the form of matrices (rate
 control, sensitivity analyses, etc.). The analysis folder also contains
-*MechanismAnalysis* which creates free energy diagrams, and
-*ScalingAnalysis* which can give a visual representation of how well the
-scaler projects descriptor space to parameter space.
+``MechanismAnalysis`` which creates free energy diagrams, and
+``ScalingAnalysis`` which can give a visual representation of how well the
+``scaler`` projects descriptor space to parameter space.
 
 Using the code
 ==============
@@ -228,8 +228,11 @@ ReactionModel
    defined if ``ThermodynamicScaler`` is being used with temperature as a
    descriptor. [number in Kelvin]
 
--  ``descriptor_names`` - names of variables to be used as descriptors.
-   [list of strings]
+-  ``descriptor_names`` - names of variables to be used as descriptors.[list of strings]
+   The variables can be:
+   -  The name of adsorbates
+   -  ``temperature``
+   -  ``voltage``: for electrochemical reactions.
 
 -  ``descriptors`` - Values for the descriptors listed in ``descriptor_names``.
    It should be a list with length with ``descriptor_names``. [list of floats]

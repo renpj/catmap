@@ -1,4 +1,4 @@
-from .analysis_base import MechanismPlot, MapPlot
+from .analysis_base import MechanismPlot, MapPlot, plt, get_colors
 import numpy as np
 from math import log
 from catmap.functions import convert_formation_energies
