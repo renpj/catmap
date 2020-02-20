@@ -1,0 +1,13 @@
+surface_name	site_name	species_name	formation_energy	bulk_structure	frequencies	other_parameters	reference
+None	gas	NO	0.10	None	[]	[]	"nowhere"
+None	gas	N2	-0.025	None	[]	[]	"nowhere"
+None	gas	O2	-0.025	None	[]	[]	"nowhere"
+Surf	111	NO	0.00	fcc	[]	[]	"nowhere"
+Surf	111	N2	-0.125	fcc	[]	[]	"nowhere"
+Surf	111	O2	-0.125	fcc	[]	[]	"nowhere"
+Surf	111	NO-NO	1.50	fcc	[]	[]	"nowhere"
+Surf	111	ON-ON	0.70	fcc	[]	[]	"nowhere"
+Surf	111	NONO	0.40	fcc	[]	[]	"nowhere"
+Surf	111	ONON	-0.70	fcc	[]	[]	"nowhere"
+Surf	111	NO-ON	1.20	fcc	[]	[]	"nowhere"
+Surf	111	ON-NO	0.90	fcc	[]	[]	"nowhere"
