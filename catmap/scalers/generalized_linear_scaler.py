@@ -7,6 +7,7 @@ import pylab as plt
 class GeneralizedLinearScaler(ScalerBase):
     """
         :TODO:
+
     """
     def __init__(self,reaction_model = None):
         ScalerBase.__init__(self,reaction_model)
@@ -32,6 +33,7 @@ class GeneralizedLinearScaler(ScalerBase):
     def parameterize(self):
         """
             :TODO:
+
         """
         #Check that descriptors are in reaction network
         all_ads = list(self.adsorbate_names) + list(self.transition_state_names)
@@ -69,6 +71,7 @@ class GeneralizedLinearScaler(ScalerBase):
     def get_coefficient_matrix(self):
         """
             :TODO:
+
         """
         self.parameterize()
         if not self.scaling_constraint_dict:
@@ -101,6 +104,7 @@ class GeneralizedLinearScaler(ScalerBase):
         """Calculate coefficients for scaling all adsorbates and transition states
             using constrained optimization.  Store results in self.total_coefficient_dict
             and return the coefficient matrix for the adsorbates only.
+
         """
         n_ads = len(self.parameter_names)
         C = scaling_coefficient_matrix(
@@ -115,6 +119,7 @@ class GeneralizedLinearScaler(ScalerBase):
     def get_transition_state_coefficient_matrix(self):
         """
             :TODO:
+
         """
         self.get_transition_state_scaling_matrix()
         if self.transition_state_scaling_matrix is not None:
@@ -132,6 +137,7 @@ class GeneralizedLinearScaler(ScalerBase):
     def get_transition_state_scaling_matrix(self):
         """
             :TODO:
+
         """
         #This function is godawful and needs to be cleaned up considerably...
         #156 lines is unacceptable for something so simple.
@@ -342,6 +348,7 @@ class GeneralizedLinearScaler(ScalerBase):
     def get_electronic_energies(self,descriptors):
         """
             :TODO:
+
         """
         E_dict = {}
 
@@ -394,6 +401,7 @@ class GeneralizedLinearScaler(ScalerBase):
     def get_rxn_parameters(self,descriptors, *args, **kwargs):
         """
             :TODO:
+
         """
         if self.adsorbate_interaction_model not in ['ideal',None]:
             params =  self.get_formation_energy_interaction_parameters(descriptors)
@@ -405,6 +413,7 @@ class GeneralizedLinearScaler(ScalerBase):
     def get_formation_energy_parameters(self,descriptors):
         """
             :TODO:
+
         """
         free_energy_dict = self.get_free_energies(descriptors)
         params = []
@@ -415,6 +424,7 @@ class GeneralizedLinearScaler(ScalerBase):
     def get_formation_energy_interaction_parameters(self,descriptors):
         """
             :TODO:
+
         """
         E_f = self.get_formation_energy_parameters(descriptors)
         epsilon = self.thermodynamics.adsorbate_interactions.get_interaction_matrix(descriptors)
@@ -423,7 +433,9 @@ class GeneralizedLinearScaler(ScalerBase):
 
     def parse_constraints(self,constraint_dict):
         """This function converts constraints which are input as a dictionary
-        to lists compatible with the function to obtain scaling coefficients."""
+        to lists compatible with the function to obtain scaling coefficients.
+
+        """
         coefficient_mins = []
         coefficient_maxs = []
 
@@ -452,6 +464,7 @@ class GeneralizedLinearScaler(ScalerBase):
     def summary_text(self):
         """
             :TODO:
+
         """
         str_dict = {}
         labs = ['E_{'+self.texify(l)+'}' for l in self.descriptor_names] + ['']

@@ -8,8 +8,8 @@ class TableParser(ParserBase):
     """Parses attributes based on column headers and filters.
 
     Additional functionality may be added by inheriting and defining
-        the parse_{header_name} function where header_name is the 
-        column header for the additional variable to be parsed.
+    the `parse_{header_name}` function where header_name is the
+    column header for the additional variable to be parsed.
     """
     def __init__(self,reaction_model=None,**kwargs):
         ParserBase.__init__(self,reaction_model)

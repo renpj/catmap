@@ -8,12 +8,12 @@ from catmap import string2symbols
 class SolverBase(ReactionModelWrapper):
     def __init__(self,reaction_model=None):
         """
-        Class for `solving' for equilibrium coverages and rates as a 
+        Class for `solving` for equilibrium coverages and rates as a
         function of reaction parameters. This class acts as a base class 
         to be inherited by other solver classes, but is not 
         functional on its own. 
 
-        rxn_parameters: list of necessary parameters to solve the kinetic 
+        `rxn_parameters`: list of necessary parameters to solve the kinetic
         system. This will usually be populated by the scaler.
 
         A functional derived solver class must also contain the methods:
@@ -37,8 +37,9 @@ class SolverBase(ReactionModelWrapper):
 
     def set_output_attrs(self,rxn_parameters):
         """
-        :param rxn_parameters: Reaction parameters.
-        :type rxn_parameters: list
+        :param `rxn_parameters`: Reaction parameters.
+        :type `rxn_parameters`: list
+
         """
         if True in [v in self.mapper._solver_output 
                 for v in self.output_variables]:
@@ -169,6 +170,7 @@ class NewtonRoot:
     [1] http://scipy.org
 
     [2] http://openopt.org
+
     """
 
     maxsteps = 10

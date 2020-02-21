@@ -45,10 +45,10 @@ class SteadyStateSolver(MeanFieldSolver):
     def get_rate_constants(self,rxn_parameters,coverages):
         """Return rate constants for given sequence of reaction parameters and coverages.
 
-        :param rxn_parameters: Sequence of reaction parameters.
-        :type rxn_parameters: [float]
-        :param coverages: Sequence of coverages.
-        :type coverages: [float]
+            :param rxn_parameters: Sequence of reaction parameters.
+            :type rxn_parameters: [float]
+            :param coverages: Sequence of coverages.
+            :type coverages: [float]
 
         """
 
@@ -78,6 +78,7 @@ class SteadyStateSolver(MeanFieldSolver):
             :param c0: Coverage constraints.
             :type c0: **TODO**
             :param findrootArgs: *deprecated*
+
         """
         if self.adsorbate_interaction_model in [None,'ideal'] or self.interaction_strength == 0:
             return self.get_ideal_coverages(rxn_parameters,c0,True,findrootArgs)
@@ -88,15 +89,15 @@ class SteadyStateSolver(MeanFieldSolver):
             c0=None,findrootArgs={}):
         """Return steady-state coverages using catmap.solvers.solver_base.NewtonRoot .
 
-        :param rxn_parameters: Sequence of reaction parameters.
-        :type rxn_parameters: [float]
-        :param steady_state_fn: **TODO**
-        :type steady_state_fn: **TODO**
-        :param jacobian_fn: **TODO**
-        :type jacobian_fn: **TODO**
-        :param c0: Coverage constraints
-        :type c0: **TODO**
-        :param findrootArgs: *deprecated*
+            :param rxn_parameters: Sequence of reaction parameters.
+            :type rxn_parameters: [float]
+            :param steady_state_fn: **TODO**
+            :type steady_state_fn: **TODO**
+            :param jacobian_fn: **TODO**
+            :type jacobian_fn: **TODO**
+            :param c0: Coverage constraints
+            :type c0: **TODO**
+            :param findrootArgs: *deprecated*
 
         """
 
@@ -210,7 +211,8 @@ class SteadyStateSolver(MeanFieldSolver):
 
     def get_interacting_coverages(self,rxn_parameters,c0=None,
             interaction_strength=1.0,findrootArgs={}):
-        """:TODO:
+        """
+            :TODO:
 
         """
 
@@ -231,6 +233,7 @@ class SteadyStateSolver(MeanFieldSolver):
     def bisect_interaction_strength(self,rxn_parameters,valid_strength,valid_coverages,target_strength,max_bisections,findrootArgs={}):
         """
             :TODO:
+
         """
         n_tot = len(self.adsorbate_names+self.transition_state_names)
         bisect_iter = 0
@@ -256,8 +259,8 @@ class SteadyStateSolver(MeanFieldSolver):
         """Return coverages based on probabilties according to the Boltzmann distribution
         and the adsorption energies for a given sequence of rxn_parameters.
 
-        :param rxn_parameters: Sequence of reaction parameters
-        :type rxn_parameter: [float]
+            :param rxn_parameters: Sequence of reaction parameters
+            :type rxn_parameter: [float]
 
         """
 
@@ -283,6 +286,7 @@ class SteadyStateSolver(MeanFieldSolver):
     def get_residual(self, coverages, validate_coverages=True, refresh_rate_constants=True):
         """
             :TODO:
+
         """
 
         if validate_coverages:
@@ -300,6 +304,7 @@ class SteadyStateSolver(MeanFieldSolver):
     def interacting_steady_state_function(self, coverages):
         """
             :TODO:
+
         """
 
         memo = tuple(self._rxn_parameters) + tuple(self._gas_energies) + \
@@ -318,6 +323,7 @@ class SteadyStateSolver(MeanFieldSolver):
     def ideal_steady_state_function(self, coverages):
         """
             :TODO:
+
         """
 
         memo = tuple(self._kf) \
@@ -336,6 +342,7 @@ class SteadyStateSolver(MeanFieldSolver):
     def interacting_steady_state_jacobian(self,coverages):
         """
             :TODO:
+
         """
 
         J = self.interacting_mean_field_jacobian(
@@ -348,6 +355,7 @@ class SteadyStateSolver(MeanFieldSolver):
     def ideal_steady_state_jacobian(self,coverages):
         """
             :TODO:
+
         """
         J = self.ideal_mean_field_jacobian(
                 self._kf,self._kr,coverages,self.gas_pressures,
@@ -357,6 +365,7 @@ class SteadyStateSolver(MeanFieldSolver):
     def constrain_coverages(self,cvgs):
         """
             :TODO:
+
         """
 
         min_cvg = self._mpfloat(10**(-(self.decimal_precision)))
@@ -366,6 +375,7 @@ class SteadyStateSolver(MeanFieldSolver):
     def compile(self):
         """
             :TODO:
+
         """
         if not self._compiled:
             intermediate_subs = {}

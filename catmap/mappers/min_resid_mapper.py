@@ -61,18 +61,18 @@ class MinResidMapper(MapperBase):
 
     def get_initial_coverage(self, descriptors, *args, **kwargs):
         """
-            Return initial guess for coverages based on Boltzmann weights.
-            The return format is [descriptors, [coverages]] where the list
-            of coverages represents the initial guess for different choices
-            for gas phase-reservoirs that are in equilibrium with the
-            surface coverages.
+        Return initial guess for coverages based on Boltzmann weights.
+        The return format is [descriptors, [coverages]] where the list
+        of coverages represents the initial guess for different choices
+        for gas phase-reservoirs that are in equilibrium with the
+        surface coverages.
 
-            :param descriptors: [float]
-            :type descriptors: A list of descriptor values, like [.5, .5]
-            :param *args: see catmap.solver.get_initial_coverages
-            :type *args: []
-            :param **kwargs: see catmap.solver.get_initial_coverages
-            :type **kwargs: {}
+            :param `descriptors`: A list of descriptor values, like [.5, .5]
+            :type `descriptors`: [float]
+            :param `*args`: see catmap.solver.get_initial_coverages
+            :type `*args`: []
+            :param `**kwargs`: see catmap.solver.get_initial_coverages
+            :type `**kwargs`: {}
 
         """
         params = self.scaler.get_rxn_parameters(descriptors)
@@ -98,12 +98,11 @@ class MinResidMapper(MapperBase):
     def get_point_coverage(self, descriptors, *args, **kwargs):
         """Shortcut to get final coverages at a point.
 
-            :param descriptors: List of chemical descriptors, like [-.5, -.5]
-            :type descriptors: [float]
-            :param *args: see catmap.solvers.get_coverage
-            :type *args: []
-            :param **kwargs: see catmap.solver.get_coverage
-
+            :param `descriptors`: List of chemical descriptors, like [-.5, -.5]
+            :type `descriptors`: [float]
+            :param `*args`: see catmap.solvers.get_coverage
+            :type `*args`: []
+            :param `**kwargs`: see catmap.solver.get_coverage
 
         """
         # Check to see if point has already been solved

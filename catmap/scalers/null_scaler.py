@@ -1,7 +1,9 @@
 from .scaler_base import *
 
 class NullScaler(ScalerBase):
-    """Scaler which passes descriptor values directly to solver"""
+    """Scaler which passes descriptor values directly to solver
+
+    """
 
     def get_electronic_energies(self,descriptors):
         E_dict = {}

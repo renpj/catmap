@@ -16,8 +16,10 @@ except ImportError:
 from itertools import combinations_with_replacement as combinations
 
 class FirstOrderInteractions(ReactionModelWrapper):
-    """Class for implementing 'first-order adsorbate interaction model. 
-    Should be sub-classed by scaler."""
+    """Class for implementing first-order adsorbate interaction model.
+    Should be sub-classed by scaler.
+
+    """
 
     def __init__(self,reaction_model=None):
         if reaction_model is None:
@@ -595,9 +597,11 @@ class FirstOrderInteractions(ReactionModelWrapper):
         return epsilon_matrix
 
     def get_TS_weight_matrix(self,weight):
-        """Helper function to get `weights' of how
+        """Helper function to get `weights` of how
         to distribute TS-cross interactions between IS/FS.
-        Should not be called externally."""
+        Should not be called externally.
+
+        """
 
         weight_matrix = []
         for TS in self.transition_state_names:

@@ -27,10 +27,9 @@ resolution = 20
 # pressure_mode = 'concentration'
 
 species_definitions = {}
-species_definitions['NO_g'] = {'concentration':1.0} # define the gas pressures
-species_definitions['O2_g'] = {'concentration':0}
-species_definitions['N2_g'] = {'concentration':0}
-
+species_definitions['NO_g'] = {'concentration':0.998} # define the gas pressures
+species_definitions['O2_g'] = {'concentration':0.001}
+species_definitions['N2_g'] = {'concentration':0.001}
 species_definitions['s'] = {'site_names': ['111'], 'total':1} # define the sites
 
 data_file = 'example_network.pkl'

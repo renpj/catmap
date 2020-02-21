@@ -1,4 +1,3 @@
-=============
 Code Overview
 =============
 
@@ -29,7 +28,7 @@ structure of the code, as well as its specific functions and how to
 begin using it.
 
 Useful Definitions
-==================
+------------------
 
 **(Note: symbols may not appear in Safari/IE)**
 
@@ -58,7 +57,7 @@ Useful Definitions
   reaction models (e.g. energetics data)
 
 Code Structure
-==============
+--------------
 
 -  The interface to the code is handled through the *ReactionModel*
    class. This class acts as a messenger class which broadcasts all its
@@ -105,7 +104,7 @@ control, sensitivity analyses, etc.). The analysis folder also contains
 ``scaler`` projects descriptor space to parameter space.
 
 Using the code
-==============
+--------------
 
 Some examples can be found in the :doc:`../tutorials/index`, and
 these should explain the syntax necessary and serve as a good starting
@@ -132,7 +131,7 @@ implementations. The possible inputs for the currently implemented
 variants of each class are listed below.
 
 ReactionModel
--------------
+^^^^^^^^^^^^^
 
 -  ``rxn_expressions`` - These expressions determine the elementary
    reaction, and are the most important part of the model. They must
@@ -277,14 +276,14 @@ ReactionModel
    ``'mpmath'``. [string]
 
 Parser
-------
+^^^^^^
 
 -  ``input_file`` - file where input data is stored. File must be in the
    correct format for the parser used. See :doc:`../tutorials/generating_an_input_file` for more
    information.
 
 Scaler
-------
+^^^^^^
 
 -  ``gas_thermo_mode`` - Approximation used for obtaining gas-phase
    free energy corrections. Defaults to ``'ideal_gas'``. [string]
@@ -341,7 +340,7 @@ Scaler
    -  ``'fixed_enthalpy_entropy_adsorbate'``: based on input enthalpy, entropy, ZPE
 
 Solver
-------
+^^^^^^
 
 SteadyStateSolver
 :::::::::::::::::
@@ -364,7 +363,7 @@ SteadyStateSolver
    "converging". Must be less than 1. Defaults to 0.5. [number]
 
 Mapper
-------
+^^^^^^
 
 MinResidMapper
 ::::::::::::::
@@ -389,7 +388,7 @@ MinResidMapper
    [integer]
 
 ThermoCorrections
------------------
+^^^^^^^^^^^^^^^^^
 
 -  ``thermodynamic_corrections`` - corrections to apply. Defaults to
    ['gas','adsorbate']. [list of strings]
@@ -428,7 +427,7 @@ ThermoCorrections
    Defaults to False. [boolean]
 
 Analysis
---------
+^^^^^^^^
 
 MechanismAnalysis
 :::::::::::::::::

@@ -6,7 +6,9 @@ from catmap.functions import numerical_jacobian
 
 class MeanFieldSolver(SolverBase):
     """Class for handling mean-field type kinetic models. Can be sub-classed to
-    get functionality for steady-state solutions, sabatier solutions, etc."""
+    get functionality for steady-state solutions, sabatier solutions, etc.
+
+    """
 
     def __init__(self,reaction_model=None):
         SolverBase.__init__(self,reaction_model)
@@ -26,6 +28,7 @@ class MeanFieldSolver(SolverBase):
             returns list of reaction rate for each elementary reaction
             based on reaction constants & coverage
             .. todo:: coverages, rate_constants
+
         """
         rates = self.elementary_rates(
                 rate_constants,
@@ -52,18 +55,25 @@ class MeanFieldSolver(SolverBase):
         rates =  self.get_rxn_rates(coverages,rate_constants)
         return rates
 
-    def get_turnover_frequency(self,rxn_parameters,rates=None,verify_coverages=True):
+    def get_turnover_frequency(self, rxn_parameters, rates=None, verify_coverages=True):
         """
-        return list of turnover frequencies of all the gas-phase species
-        :param rates: list of rates of each rxn
-        ineq_cons = {'type': 'ineq',
-                   'fun' : lambda x: x,
-                   'jac' : lambda x: np.eye(*np.shape(x))}
-        :type rates: list
-        :param verify_coverages: verify that the species has a certain value for the coverage
-        :type verify_coverages: bool, optional
-        :param rxn_parameters: reaction parameters, see solver-base
+        Return list of turnover frequencies of all the gas-phase species
+
+            :param `rates`: list of rates of each reaction.
+                `ineq_cons = {
+                'type': 'ineq',
+                'fun': lambda x: x,
+                'jac': lambda x: np.eye(*np.shape(x))
+                }`
+            :type `rates`: list
+
+            :param `verify_coverages`: verify that the species has a certain value for the coverage
+            :type `verify_coverages`: bool, optional
+
+            :param `rxn_parameters`: reaction parameters, see solver-base
+
         """
+
         rxn_parameters = list(rxn_parameters)
         if rates is None:
             rates = self.get_rate(rxn_parameters,verify_coverages=verify_coverages)
@@ -96,9 +106,11 @@ class MeanFieldSolver(SolverBase):
 
     def get_selectivity(self,rxn_parameters,weights=None):
         """
-        return list of selectivity of each reaction
-        :param rxn_parameters: reaction parameters, see solver-base
-        :param weights: weights for each species. Defaults to 1 for all species
+        Return list of selectivity of each reaction
+
+        :param `rxn_parameters`: reaction parameters, see solver-base
+        :param `weights`: weights for each species. Defaults to 1 for all species
+
         """
         tofs = self.get_turnover_frequency(rxn_parameters)
         if weights is None:
@@ -131,9 +143,11 @@ class MeanFieldSolver(SolverBase):
 
     def get_rate_control(self,rxn_parameters):
         """
-        return list of degree of rate control for each reaction
+        Return list of degree of rate control for each reaction
         Ref: Stegelmann et al., DOI: 10.1021/ja9000097
-        :param rxn_parameters: reaction parameters, see solver-base
+
+        :param `rxn_parameters`: reaction parameters, see solver-base
+
         """
         kT = self._kB*self.temperature
         eps = self._mpfloat(self.perturbation_size)
@@ -160,8 +174,9 @@ class MeanFieldSolver(SolverBase):
 
     def get_interacting_energies(self,rxn_parameters):
         """
-        return the integral energy under high coverage with interactions
-        :param rxn_parameters: reaction parameters, see solver-base
+        Return the integral energy under high coverage with interactions
+        :param `rxn_parameters`: reaction parameters, see solver-base
+
         """
         all_ads = self.adsorbate_names + self.transition_state_names
         N_ads = len(all_ads)
@@ -173,8 +188,10 @@ class MeanFieldSolver(SolverBase):
 
     def get_selectivity_control(self,rxn_parameters):
         """
-        return the list of degree of selectivity control for each rxn
-        :param rxn_parameters: reaction parameters, see solver-base
+        Return the list of degree of selectivity control for each rxn
+
+        :param `rxn_parameters`: reaction parameters, see solver-base
+
         """
         kT = self._kB*self.temperature
         eps = self._mpfloat(self.perturbation_size)
@@ -200,10 +217,13 @@ class MeanFieldSolver(SolverBase):
 
     def get_rxn_order(self,rxn_parameters,epsilon=1e-10):
         """
-        return the reaction orders for the reactants
-        :param rxn_parameters: reaction parameters, see solver-base
-        :param epsilon: degree of perturbation in pressure
-        :type epsilon: float, optional
+        Return the reaction orders for the reactants
+
+        :param `rxn_parameters`: reaction parameters, see solver-base
+
+        :param `epsilon`: degree of perturbation in pressure
+        :type `epsilon`: float, optional
+
         """
         current_tofs = self.get_turnover_frequency(rxn_parameters)
         current_Ps = [p for p in self.gas_pressures]
@@ -237,10 +257,14 @@ class MeanFieldSolver(SolverBase):
         for production/consumption of each gas phase species.
         Calculated as
         E_app = T^2(dlnr_+/dT)=(T^2/r_+)(dr_+/dT), where r+ is the TOF
-        :param rxn_parameters: reaction paramenters, see solver-base
-        :param epsilon: degree of pertubation in temperature
-        :type epsilon: float, optional
+
+            :param `rxn_parameters`: reaction paramenters, see solver-base
+
+            :param `epsilon`: degree of pertubation in temperature
+            :type `epsilon`: float, optional
+
         """
+
         current_tofs = self.get_turnover_frequency(rxn_parameters)
         current_T = self.temperature
         new_T = current_T*(1+epsilon)
@@ -269,14 +293,17 @@ class MeanFieldSolver(SolverBase):
 
     def summary_text(self):
         """Stub for producing solver summary.
+
         """
         return r"\begin{verbatim}" + "\n".join(self.rate_equations()) + "\n\end{verbatim}"
 
     def rate_equation_term(self,species_list,rate_constant_string,d_wrt=None):
         """
         Function to compose a term in the rate equation - e.g. kf[1]*theta[0]*p[0]
-        :param species_list: list of species in rate equations
-        :type species_list: list
+
+            :param species_list: list of species in rate equations
+            :type species_list: list
+
         """
 
         #This clause allows for multiple site types.
@@ -363,7 +390,10 @@ class MeanFieldSolver(SolverBase):
         return site_strings
 
     def substitutions_dict(self):
-        """Dictionary of substitutions needed for static compiled functions"""
+        """Dictionary of substitutions needed for static compiled functions
+
+        """
+
         subdict = {}
         subdict['temperature'] = 'T = '+repr(self.temperature)
         subdict['kB'] = 'kB = '+repr(self._kB)
@@ -432,12 +462,13 @@ class MeanFieldSolver(SolverBase):
     def rate_equations(self):
         """Compose analytical expressions for the reaction rates and
         change of surface species wrt time (dc/dt).
+
         Assumes:
 
-        kf is defined as a list of forward rate-constants
-        kr is defined as a list of reverse rate-constants
-        theta is defined as a list of coverages
-        p is defined as a list of pressures
+        - kf is defined as a list of forward rate-constants
+        - kr is defined as a list of reverse rate-constants
+        - theta is defined as a list of coverages
+        - p is defined as a list of pressures
 
         """
 
@@ -471,25 +502,29 @@ class MeanFieldSolver(SolverBase):
 
     def jacobian_equations(self,adsorbate_interactions=True):
         """Composes analytical expressions for the Jacobian matrix.
+
         Assumes:
 
-        kf is defined as a list of forward rate-constants
-        kr is defined as a list of reverse rate-constants
-        theta is defined as a list of coverages
-        p is defined as a list of pressures
+        - kf is defined as a list of forward rate-constants
+        - kr is defined as a list of reverse rate-constants
+        - theta is defined as a list of coverages
+        - p is defined as a list of pressures
 
         If the rate constants depend on coverage, use
         adsorbate_interactions = True.
+
         Assumes:
 
-        kB is defined as Boltzmann's constant
-        T is defined as the temperature
-        dEf is defined as a list of lists where dEf[i][j] is the
-            derivative of forward activation free energy i wrt coverage j
-        dEr is defined as a list of lists where dEr[i][j] is the
-            derivative of reverse activation free energy i wrt coverage j
-        :param: adsorbate_interactions: tell if need to include interactions
-        :type: adsorbate_interactions: bool, optional
+        - kB is defined as Boltzmann's constant
+        - T is defined as the temperature
+        - dEf is defined as a list of lists where dEf[i][j] is the
+          derivative of forward activation free energy i wrt coverage j
+        - dEr is defined as a list of lists where dEr[i][j] is the
+          derivative of reverse activation free energy i wrt coverage j
+
+           :param: adsorbate_interactions: tell if need to include interactions
+           :type: adsorbate_interactions: bool, optional
+
         """
 
         site_strings = self.site_string_list()
@@ -544,20 +579,20 @@ class MeanFieldSolver(SolverBase):
         Assumes:
 
         Gf is a list of formation energies ordered as
-            adsorbate_names+transition_state_names
+        adsorbate_names+transition_state_names
 
         If model includes adsorbate interactions then use
         adsorbate_interactions = True to include dEa/dtheta in the output.
         Assumes:
 
         dGs is a matrix/array of derivatives of free energies wrt coverages
-            such that dGs[:,i] is a vector of derivatives of the free energy
-            of species i wrt each coverage ordered as adsorbate_names
+        such that dGs[:,i] is a vector of derivatives of the free energy
+        of species i wrt each coverage ordered as adsorbate_names
 
-        :param: adsorbate_interaction: specify whether or not to include interactions
-        :type: adsorbate_interaction: bool, optional
+            :param: adsorbate_interaction: specify whether or not to include interactions
+            :type: adsorbate_interaction: bool, optional
+
         """
-
         idx_dict = {}
         for i,ads in enumerate(self.adsorbate_names):
             idx_dict[ads] = str(i)
@@ -579,10 +614,13 @@ class MeanFieldSolver(SolverBase):
         def species_strings(state_list,list_name,include_constants=True,type='list'):
             """
             return the strings containing the IS, TS and FS for the reactions
-            :param: include_constants: tell if need to include the energies
-            :type: include_constants: bool, optional
-            :param: type: the output type
-            :type: type: string, optional
+
+            :param: `include_constants`: tell if need to include the energies
+            :type: `include_constants`: bool, optional
+
+            :param: `type`: the output type
+            :type: `type`: string, optional
+
             """
             species_strs = []
             for species in state_list:
@@ -635,13 +673,14 @@ class MeanFieldSolver(SolverBase):
 
     def get_empty_site_cvgs(self):
         """
-        take the coverages at a certain coverage_map entry and
+        Take the coverages at a certain coverage_map entry and
         return the dict of all the empty-sites coverages
         i.e. dict[site_name] = coverage
 
-        type:
-        coverages: list
+        :type: `coverages`: list
+
         """
+
         site_cvgs = {}
         site_eqs = self.site_string_list()  # get the eqns to calculate empty site coverages
 
@@ -665,9 +704,10 @@ class MeanFieldSolver(SolverBase):
         return the ec on a certain coverage_map entry of a
         certain elementary step based on rxn_number and direction given
 
-        type:
-        rxn_num: float
-        direction: str ('kf' or 'kr')
+        :type: `rxn_num`: float
+
+        :type: `direction`: str ('kf' or 'kr')
+
         """
         if direction == 'kf':
             eq = self.rate_equation_term(self._rxm.elementary_rxns[rxn_num][0],'kf['+str(rxn_num)+']')
@@ -698,9 +738,10 @@ class MeanFieldSolver(SolverBase):
         get the exchange current density of a certain
         map entry on all elementary rxns for a given direction
 
-        type:
-        direction: str ('kf' or 'kr')
+        :type: `direction`: str ('kf' or 'kr')
+
         """
+
         num_rxns = len(self._rxm.elementary_rxns)
         directional_rates = [self.get_elem_ec(i,rxn_parameters,'kf') for i in range(num_rxns)] + [self.get_elem_ec(i,rxn_parameters,'kr') for i in range(num_rxns)]
         self._rxm._directional_rates = directional_rates

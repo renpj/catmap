@@ -28,22 +28,22 @@ class ThermoCorrections(ReactionModelWrapper):
     assuming the correct functions are in place.
 
     thermodynamic_corrections: List of fundamentally different types of 
-        corrections which could be included. Defaults are gas and adsorbate
-        but other possibilities might be interface, electrochemical, etc.
+    corrections which could be included. Defaults are gas and adsorbate
+    but other possibilities might be interface, electrochemical, etc.
 
     thermodynamic_variables: List of variables which define a thermodynamic
-        state. If these attributes of the underlying reaction model do not
-        change then the thermodynamic corrections will not be recalculated
-        in order to save time.
+    state. If these attributes of the underlying reaction model do not
+    change then the thermodynamic corrections will not be recalculated
+    in order to save time.
 
     To add a new correction type (called custom_correction):
         1) Define the function which performs the correction as an attribute.
-            Assume the function is called "simple_custom_correction".
+           Assume the function is called "simple_custom_correction".
         2) Place the "custom_correction" in the "thermodynamic_corrections" list
         3) Place any variables which the custom correction depends on in
-            the thermodynamic_variables list
-        4) Set the "custom_correction_thermo_mode" attribute of the 
-            underlying reaction model to "simple_custom_correction"
+           the thermodynamic_variables list
+        4) Set the "custom_correction_thermo_mode" attribute of the
+           underlying reaction model to "simple_custom_correction"
 
     If these steps are followed then the correction should automatically be
     included in all calculations.
@@ -99,9 +99,10 @@ class ThermoCorrections(ReactionModelWrapper):
 
     def get_thermodynamic_corrections(self, **kwargs):
         """
-        Calculate all ``thermodynamic'' corrections beyond the energies
+        Calculate all `thermodynamic` corrections beyond the energies
         in the input file. This master function will call sub-functions
-        depending on the ``thermo mode'' of each class of species
+        depending on the `thermo mode` of each class of species
+
         """
         l = self.thermodynamic_corrections
         if 'electrochemical' in l:
@@ -155,6 +156,7 @@ class ThermoCorrections(ReactionModelWrapper):
         """
         Perform the thermodynamic corrections relevant to electrochemistry but
         are not specific to any particular mode.
+
         """
         # pH corrections to proton and hydroxide species
         if any(ads in ['ele_g', 'H_g', 'OH_g'] for ads in self.species_definitions.keys()):
@@ -273,6 +275,7 @@ class ThermoCorrections(ReactionModelWrapper):
     def shomate_gas(self):
         """
         Calculate free energy corrections using Shomate equation
+
         """
         gas_names = self.gas_names
         temperature = float(self.temperature)
@@ -326,6 +329,7 @@ class ThermoCorrections(ReactionModelWrapper):
         """
         Add entropy based on fixed_entropy_dict (entropy contribution to free 
         energy assumed linear with temperature) and ZPE
+
         """
         thermo_dict = {}
         gas_names = self.gas_names
@@ -354,12 +358,14 @@ class ThermoCorrections(ReactionModelWrapper):
     def frozen_fixed_entropy_gas(self):
         """
         Do not add ZPE, calculate fixed entropy correction.
+
         """
         return self.fixed_entropy_gas(False)
 
     def zero_point_gas(self):
         """
         Add zero point energy correction to gasses.
+
         """
         gas_names = self.gas_names
         freq_dict = self.frequency_dict
@@ -375,6 +381,7 @@ class ThermoCorrections(ReactionModelWrapper):
     def frozen_gas(self):
         """
         Neglect all thermal contributions, including the zero point energy.
+
         """
         gas_names = self.gas_names
         thermo_dict = {}
@@ -388,6 +395,7 @@ class ThermoCorrections(ReactionModelWrapper):
     def fixed_enthalpy_entropy_gas(self, gas_names=None):
         """
         Calculate free energy corrections based on input enthalpy, entropy, ZPE
+
         """
         thermo_dict = {}
         if not gas_names:
@@ -413,10 +421,13 @@ class ThermoCorrections(ReactionModelWrapper):
         class in ase.thermochemistry.
 
         adsorbate_names = the chemical formulas of the adsorbates of interest.
-        freq_dict = dictionary of vibrational frequencies for each adsorbate of 
-            interest. Vibrational frequencies should be in eV. The dictionary 
-            should be of the form freq_dict[ads_name] = [freq1, freq2, ...]
+
+        freq_dict = dictionary of vibrational frequencies for each adsorbate of
+        interest. Vibrational frequencies should be in eV. The dictionary
+        should be of the form freq_dict[ads_name] = [freq1, freq2, ...]
+
         """
+
         adsorbate_names = self.adsorbate_names + self.transition_state_names
         temperature = float(self.temperature)
         freq_dict = self.frequency_dict
@@ -505,7 +516,8 @@ class ThermoCorrections(ReactionModelWrapper):
 
     def shomate_adsorbate(self):
         """Calculate the thermal correction to the free energy of an
-        adsorbate using pre-fitted shomate parameters.        
+        adsorbate using pre-fitted shomate parameters.
+
         """
 
         adsorbate_names = self.adsorbate_names + self.transition_state_names
@@ -578,35 +590,45 @@ class ThermoCorrections(ReactionModelWrapper):
         3.12.0 or greater.
 
         adsorbate_names = the chemical formulas of the adsorbates of interest. 
-        freq_dict = dictionary of vibrational frequencies for each adsorbate of 
-            interest. Vibrational frequencies should be in eV. The dictionary 
-            should be of the form freq_dict[ads_name] = [freq1, freq2, ...]
-        hindered_ads_params = dictionary containing for each adsorbate 
-            [0] = translational energy barrier in eV (barrier for the 
-                  adsorbate to diffuse on the surface)
-            [1] = rotational energy barrier in eV (barrier for the adsorbate 
-                  to rotate about an axis perpendicular to the surface)
-            [2] = surface site density in cm^-2 
-            [3] = number of equivalent minima in full adsorbate rotation 
-            [4] = mass of the adsorbate in amu (can be unspecified by putting 
-                  None, in which case mass will attempt to be calculated from 
-                  the ase atoms class)
-            [5] = reduced moment of inertia of the adsorbate in amu*Ang^-2 
-                  (can be unspecified by putting None, in which case inertia 
-                  will attempt to be calculated from the ase atoms class)
-            [6] = symmetry number of the adsorbate (number of symmetric arms 
-                  of the adsorbate which depends upon how it is bound to the 
-                  surface. For example, propane bound through its end carbon 
-                  has a symmetry number of 1 but propane bound through its 
-                  middle carbon has a symmetry number of 2. For single atom 
-                  adsorbates such as O* the symmetry number is 1.)
-            The dictionary should be of the form 
-            hindered_ads_params[ads_name] = [barrierT, barrierR, site_density, 
+
+        freq_dict = dictionary of vibrational frequencies for each adsorbate of
+        interest. Vibrational frequencies should be in eV. The dictionary
+        should be of the form freq_dict[ads_name] = [freq1, freq2, ...]
+
+        hindered_ads_params = dictionary containing for each adsorbate
+            [0] = translational energy barrier in eV (barrier for the
+            adsorbate to diffuse on the surface)
+
+            [1] = rotational energy barrier in eV (barrier for the adsorbate
+            to rotate about an axis perpendicular to the surface)
+
+            [2] = surface site density in cm^-2
+
+            [3] = number of equivalent minima in full adsorbate rotation
+
+            [4] = mass of the adsorbate in amu (can be unspecified by putting
+            None, in which case mass will attempt to be calculated from
+            the ase atoms class)
+
+            [5] = reduced moment of inertia of the adsorbate in amu*Ang^-2
+            (can be unspecified by putting None, in which case inertia
+            will attempt to be calculated from the ase atoms class)
+
+            [6] = symmetry number of the adsorbate (number of symmetric arms
+            of the adsorbate which depends upon how it is bound to the
+            surface. For example, propane bound through its end carbon
+            has a symmetry number of 1 but propane bound through its
+            middle carbon has a symmetry number of 2. For single atom
+            adsorbates such as O* the symmetry number is 1.)
+
+            The dictionary should be of the form
+            hindered_ads_params[ads_name] = [barrierT, barrierR, site_density,
             rotational_minima, mass, inertia, symmetry_number]
-        atoms_dict = dictionary of ase atoms objects to use for calculating 
-            mass and rotational inertia. If none is specified then the function 
-            will look in ase.data.molecules. Can be omitted if both mass and 
-            rotational inertia are specified in hindered_ads_params.
+
+        atoms_dict = dictionary of ase atoms objects to use for calculating
+        mass and rotational inertia. If none is specified then the function
+        will look in ase.data.molecules. Can be omitted if both mass and
+        rotational inertia are specified in hindered_ads_params.
 
         """
         adsorbate_names = self.adsorbate_names + self.transition_state_names
@@ -701,6 +723,7 @@ class ThermoCorrections(ReactionModelWrapper):
     def zero_point_adsorbate(self):
         """
         Add zero point energy correction to adsorbate energy.
+
         """
         adsorbate_names = self.adsorbate_names + self.transition_state_names
         freq_dict = self.frequency_dict
@@ -726,6 +749,7 @@ class ThermoCorrections(ReactionModelWrapper):
     def frozen_adsorbate(self):
         """
         Neglect all zero point, enthalpy, entropy corrections to adsorbate energy.
+
         """
         thermo_dict = {}
         for ads in self.adsorbate_names + self.transition_state_names:
@@ -738,12 +762,14 @@ class ThermoCorrections(ReactionModelWrapper):
     def fixed_enthalpy_entropy_adsorbate(self):
         """
         Return free energy corrections based on input enthalpy, entropy, ZPE
+
         """
         return self.fixed_enthalpy_entropy_gas(self.adsorbate_names + self.transition_state_names)
 
     def average_transition_state(self, thermo_dict, transition_state_list=[], thermo_vars=[]):
         """
-        Return transition state thermochemical corrections as average of IS and FS corrections 
+        Return transition state thermochemical corrections as average of IS and FS corrections
+
         """
         if transition_state_list is None:
             transition_state_list = self.transition_state_names
@@ -774,6 +800,7 @@ class ThermoCorrections(ReactionModelWrapper):
     def generate_echem_TS_energies(self):
         """ 
         Give real energies to the fake echem transition states
+
         """
         echem_TS_names = self.echem_transition_state_names
         voltage = self.voltage
@@ -813,6 +840,7 @@ class ThermoCorrections(ReactionModelWrapper):
         """ 
         Take in the name of a transition state and return the reaction index of
         the elementary rxn from which it belongs
+
         """
         for rxn_index, eq in enumerate(self.elementary_rxns):
             if len(eq) == 3 and TS in eq[1]:
@@ -820,7 +848,8 @@ class ThermoCorrections(ReactionModelWrapper):
 
     def simple_electrochemical(self):
         """
-        Calculate electrochemical (potential) corrections to free energy. Transition state energies are corrected by a beta*voltage term.  
+        Calculate electrochemical (potential) corrections to free energy. Transition state energies are corrected by a beta*voltage term.
+
         """
         thermo_dict = {}
         gas_names = [gas for gas in self.gas_names if gas.split('_')[0] in ['pe', 'ele']]
@@ -847,6 +876,7 @@ class ThermoCorrections(ReactionModelWrapper):
     def homogeneous_field(self):
         """
         Update simple_electrochemical with field corrections for adsorbates that respond to a field
+
         """
         thermo_dict = self.simple_electrochemical()
         voltage = self.voltage
@@ -868,12 +898,16 @@ class ThermoCorrections(ReactionModelWrapper):
         """
         Obtains corrections to thermo_dict in the presence of ions
         hey you need to specify these things:
-        model.Upzc (float)
-        model.CH (float)
-        model.field_site_name
-        model.unfield_site_name
+
+        - model.Upzc (float)
+        - model.CH (float)
+        - model.field_site_name
+        - model.unfield_site_name
+
         and DO NOT specify beta
+
         """
+
         if not self.force_recompilation:
             self.force_recompilation = True
             self.log('force_recompilation')
@@ -903,6 +937,7 @@ class ThermoCorrections(ReactionModelWrapper):
     def hbond_electrochemical(self):
         """
         Update simple_electrochemical with hbonding corrections as if they were on Pt(111)
+
         """
         thermo_dict = self.simple_electrochemical()
         TS_names = [TS for TS in self.transition_state_names if
@@ -928,7 +963,9 @@ class ThermoCorrections(ReactionModelWrapper):
         for various functional groups used in Peterson(2010) - valid mostly for Pt(111)
         This is a very simplistic function.  If you need more advanced descriptions of
         hydrogen bonding, consider setting your own hbond_dict.
+
         """
+
         num_OH = formula.count('OH')
         num_O = get_composition(formula.split('_s')[0]).setdefault('O', 0)
         num_ketone = num_O - num_OH
@@ -945,6 +982,7 @@ class ThermoCorrections(ReactionModelWrapper):
     def hbond_with_estimates_electrochemical(self):
         """
         Add hbond corrections to transition states involving pe and ele (coupled proton-electron transfers and electron transfers)
+
         """
         thermo_dict = self.hbond_electrochemical()
         TS_names = [TS for TS in self.transition_state_names if
@@ -962,6 +1000,7 @@ class ThermoCorrections(ReactionModelWrapper):
     def boltzmann_coverages(self, energy_dict):
         """
         Return coverages based on Boltzmann distribution
+
         """
         # change the reference
         reservoirs = getattr(self, 'atomic_reservoir_dict', None)
@@ -1008,10 +1047,14 @@ class ThermoCorrections(ReactionModelWrapper):
     def approach_to_equilibrium_pressure(self):
         """Set product pressures based on approach to equilibrium. Requires the following attributes
         to be set:
+
         global_reactions - a list of global reactions in the same syntax as elementary expressions,
-            with each one followed by its respective approach to equilibrium.
+        with each one followed by its respective approach to equilibrium.
+
         pressure_mode - must be set to 'approach_to_equilibrium'
+
         Note that this function is not well-tested and should be used with caution.
+
         """
 
         print('APPROACH TO EQULIBRIUM PRESSURE')
@@ -1116,6 +1159,7 @@ class ThermoCorrections(ReactionModelWrapper):
     def set_affine_pressure_equilibrium(self, alpha, x0=[]):
         """ defines gas_pressure as an affine combination between the actual pressure
         and that of equilibrium by an alpha factor
+
         """
         eq_dict = self.get_pressure_equilibrium()
         xeq = eq_dict['xeq'];
@@ -1222,9 +1266,11 @@ class ThermoCorrections(ReactionModelWrapper):
             species that are far from it.
             It will look for `.equilibrated` parameter.
             This function assume 'static' pressure, such the extent of reactions
-            toward equilibrium would not lead to significant change in the systems'
-            total pressure.
+            toward equilibrium would not lead to significant change in the systems
+            'total' pressure.
+
         """
+
         print('SET EQUILIBRATED.')
 
         gas_species = self.gas_names
@@ -1282,10 +1328,12 @@ class ThermoCorrections(ReactionModelWrapper):
 
 
 def fit_shomate(Ts, Cps, Hs, Ss, params0=[], plot_file=None):
-    """This regression functionality has been updated from a non-linear version
-        to a linearized one which does not need initial guesses (params0).
-        params0 was kept as parameter to the function for backwards compatibiliy.
-        It should be following deprecated.
+    """
+       This regression functionality has been updated from a non-linear version
+       to a linearized one which does not need initial guesses (params0).
+       params0 was kept as parameter to the function for backwards compatibiliy.
+       It should be following deprecated.
+
     """
     try:
         from scipy.linalg import solve
@@ -1357,6 +1405,7 @@ def fit_shomate(Ts, Cps, Hs, Ss, params0=[], plot_file=None):
 
 def harmonic_to_shomate(frequencies, Tmin, Tmax, resolution):
     """Generate Shomate parameters as of frequency data by using `fit_shomate`.
+
     """
     from scipy.interpolate import pchip_interpolate
     frequency_unit_conversion = 1.239842e-4;

@@ -26,6 +26,7 @@ class ReactionModel:
     - data files for energies
     - external parameters (temperature, pressures)
     - other more technical settings related to the solver and mapper
+
     """
 
     def __init__(self, **kwargs):
@@ -455,37 +456,37 @@ class ReactionModel:
         self.parser.parse(*args, **kwargs)
 
     def log(self, event, **kwargs):
-        """
-        Add an event to the log file. This assumes that the template
+        """Add an event to the log file. This assumes that the template
         for the event has been specified in the _log_strings attribute
         of the class that calls the log() function.
 
         :param event: A key that defines the event to be logged. The
-                      _log_strings attribute of the subclass which
-                      calls log() should be a dictionary where `event`
-                      is a key and the value is a template string. The template
-                      string can contain the following variables which
-                      will auto-populate:
+            _log_strings attribute of the subclass which
+            calls log() should be a dictionary where `event`
+            is a key and the value is a template string. The template
+            string can contain the following variables which
+            will auto-populate:
 
-                      * pt - the current point in descriptor space
-                      * priority - defaults to 0
-                      
-                      In addition, the template may contain other variables
-                      which can be passed in as keyword arguments. The following
-                      are special arguments:
+            * pt - the current point in descriptor space
+            * priority - defaults to 0
 
-                      *n_iter - the iteration number will be appended to the event title
+            In addition, the template may contain other variables
+            which can be passed in as keyword arguments. The following
+            are special arguments:
 
-                      The event title should be of the form routinename_status, where
-                      routinename is the name of the routine/algorithm and the status
-                      is succeess/failure/evaluation/etc.
+            * n_iter - the iteration number will be appended to the event title
+
+            The event title should be of the form routinename_status, where
+            routinename is the name of the routine/algorithm and the status
+            is succeess/failure/evaluation/etc.
         :type event: str
 
         :param kwargs: Keyword arguments can be specified and will be passed into
-                       the template retrieved from _log_strings['event']
+            the template retrieved from _log_strings['event']
+        :type kwargs: dict
 
-        :type kwargs: keyword arguments
         """
+
         message = self._log_strings[event]
         loop, status = event.rsplit('_', 1)
         kwargs['loop'] = loop
@@ -757,19 +758,19 @@ class ReactionModel:
         """
         Print a structured elementary step and print it as plain text or latex.
 
-        :param rxn: Elementary step list of the form [[IS1,IS2,...],[TS1,TS2,...],[FS1,FS2,...]]
-                    where ISi,TSi,FSi correspond to species in the initial/transition/final states
-                    and the [TS1,TS2,...] list is optional.
-        :type rxn: [[str]]
+            :param `rxn`: Elementary step list of the form [[IS1,IS2,...],[TS1,TS2,...],[FS1,FS2,...]]
+                        where ISi,TSi,FSi correspond to species in the initial/transition/final states
+                        and the [TS1,TS2,...] list is optional.
+            :type `rxn`: [[str]]
 
-        :param mode: Output mode. Should be 'latex' for LaTeX, or 'text' for plain text.
-        :type mode: str
+            :param `mode`: Output mode. Should be 'latex' for LaTeX, or 'text' for plain text.
+            :type `mode`: str
 
-        :param include_TS: Include the transition-state in the output. Optional parameter, default is True.
-        :type include_TS:bool
-        
-        :param print_out: Print the reaction to stdout. Optional parameter, default is False.
-        :type print_out:bool
+            :param `include_TS`: Include the transition-state in the output. Optional parameter, default is True.
+            :type `include_TS`: bool
+
+            :param `print_out`: Print the reaction to stdout. Optional parameter, default is False.
+            :type `print_out`: bool
 
         """
         if mode == 'latex':

@@ -12,7 +12,7 @@ from catmap.functions import get_composition, cartesian_product
 
 class ParserBase(ReactionModelWrapper):
     def __init__(self, reaction_model=None):
-        """Class for `parsing' information from raw data 
+        """Class for `parsing` information from raw data
         (databases, spreadsheets, text files, trajectories, etc.) into a 
         structure which is useful to the microkinetic model. This class acts 
         as a base class to be inherited by other parser classes, but it is 

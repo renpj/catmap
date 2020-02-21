@@ -3,7 +3,9 @@ from copy import copy
 
 class IntegratedRateControlSolver(SolverBase):
     """Class for estimating rates based on the degree of rate control
-    screening method {citation after published}"""
+    screening method {citation after published}
+
+    """
 
     def __init__(self,reaction_model=None):
         SolverBase.__init__(self,reaction_model)

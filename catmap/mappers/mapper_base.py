@@ -1,4 +1,4 @@
-"""Class for `mapping' equilibrium coverages and rates through
+"""Class for `mapping` equilibrium coverages and rates through
 descriptor space. This class acts as a base class to be inherited
 by other mapper classes, but is not functional on its own.
 
@@ -7,7 +7,7 @@ get_rxn_parameter_map(descriptor_ranges,resolution): Uses a
     descriptor space. May be useful for debugging or providing
     intuition about rate determining steps. Should return a list of
     the form
-[[descriptor_1,descriptor_2,...],[rxn_parameter1, rxn_parameter2, ...]]
+    [[descriptor_1,descriptor_2,...],[rxn_parameter1, rxn_parameter2, ...]]
 
 save_map(map,map_file): creates a pickle of the "map" list and dumps it
     to the map_file
