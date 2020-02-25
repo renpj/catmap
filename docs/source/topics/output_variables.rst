@@ -10,10 +10,16 @@ some of the more common ones are presented here below.
 -  ``free_energy``: contains the free energy of all species in the reaction model as
    calculated by the scaler.  This, in conjunction with the MechanismAnalysis module
    can be useful in diagnosing issues in the model where the free energies of intermediates
-   are unexpected in some way.  Along with the related scaler-originated variables ``rxn_parameter``,
+   are unexpected in some way.
+
+   **Note:** Pressures should not be used in microkinetic modelling; they are implicitly
+   included in the rate expressions via the thermodynamic derivations.
+
+   Along with the related scaler-originated variables ``rxn_parameter``,
    ``frequency``, ``electronic_energy``, ``zero_point_energy``, ``enthalpy``, and ``entropy``,
    these are not typically plotted on a contour plot as they are in the tutorial without manual
    adjustment to the plotting parameters.
+
 
 -  ``rate_control`` and ``selectivity_control``: see :ref:`Sensitivity analyses <ratecontrol>`
 

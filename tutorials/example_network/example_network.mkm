@@ -6,21 +6,27 @@ scaler = 'ThermodynamicScaler'
 rxn_expressions = [
 
                '*_s + NO_g -> NO*',
-               '*_s + N2_g -> N2*',
-               '*_s + O2_g -> O2*',
+               'N2* + O2* -> 2*_s + N2_g + O2_g',
                'NO* + NO* <-> NO-NO* + * -> NONO* + *',
                'NO* + NO* <-> ON-ON* + * -> ONON* + *',
                'NONO* + * <-> NO-ON* + * -> N2* + O2*',
                'ONON* + * <-> ON-NO* + * -> N2* + O2*',
-
+#                '2NO_g + *_s <->  NO-NO* -> NONO*',
+#                '2NO_g + *_s <->  ON-ON* -> ONON*',
+#                'NONO* <-> NO-ON* -> N2_g + O2_g + *_s',
+#                'ONON* <-> ON-NO* -> N2_g + O2_g + *_s',
                    ]
 
+rxn_mechanisms = {
+   "ABD": [1, 1, 3, 5, 2],
+   "ACD": [1, 1, 4, 6, 2],
+}
 
 surface_names = ['Surf']
 
 descriptor_names= ['temperature','logPressure'] # descriptor names
 
-descriptor_ranges = [[200,400],[-2,2]]
+descriptor_ranges = [[100,700],[-2,8]]
 
 resolution = 20
 
@@ -59,11 +65,11 @@ adsorbate_thermo_mode = "frozen_adsorbate"
 #Solver parameters
 #
 
-decimal_precision = 100 #precision of numbers involved
+decimal_precision = 150 #precision of numbers involved
 
-tolerance = 1e-70 #all d_theta/d_t's must be less than this at the solution
+tolerance = 1e-100 #all d_theta/d_t's must be less than this at the solution
 
-max_rootfinding_iterations = 200
+max_rootfinding_iterations = 300
 
 max_bisections = 4
 

@@ -8,8 +8,8 @@ scaler_variables = ['rxn_parameter',
                     'frequency','electronic_energy',
                     'free_energy', 'enthalpy', 'entropy']
 # Warning: adding 'rate_control' or 'selectivity_control' to output_variables increases calculation time significantly
-solver_variables = ['production_rate', 'rate_control', 'coverage', 'rate',
-                    'consumption_rate',
+solver_variables = ['production_rate', 'coverage', 'rate',
+                    'consumption_rate',  # 'rate_control',
                     'rate_constant', 'equilibrium_constant',
                     'rxn_order', 'apparent_activation_energy',
                     'directional_rates', 'forward_rate', 'reverse_rate',

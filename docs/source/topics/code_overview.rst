@@ -409,6 +409,8 @@ ThermoCorrections
    Parameters used for
    ``ase.thermochemistry.IdealGasThermo``. Defaults to
    ``catmap.data.ideal_gas_params``.  [dictionary of string:string/int]
+   The user defined ``ideal_gas_params`` should include all the gas species,
+   because the default values will not included automatically.
 
    .. _fixed_entropy_dict:
 -  ``fixed_entropy_dict`` - entropies to use in the static entropy
