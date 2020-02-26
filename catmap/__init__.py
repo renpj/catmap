@@ -45,7 +45,7 @@ try:
     from ase.symbols import string2symbols
 except:
     from ase.atoms import string2symbols
-from ase.thermochemistry import IdealGasThermo, HarmonicThermo
+# from ase.thermochemistry import IdealGasThermo, HarmonicThermo
 try:
     from ase.build import molecule
 except ImportError:

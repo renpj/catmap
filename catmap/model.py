@@ -1068,7 +1068,7 @@ class ReactionModel:
                 elif isinstance(prefactor, dict):
                     A_site = prefactor["A_site"]
                     if prefactor["type"] == "non-activated":
-                        from catmap import string2symbols
+                        # from catmap import string2symbols
                         from ase.data import atomic_masses
                         from ase.data import atomic_numbers
                         assert len(rxn) == 2  # if not, rxn is not non-activated
@@ -1092,7 +1092,7 @@ class ReactionModel:
                         _u2kg = 1.660538921e-27
                         _eV2J = 1.602176565e-19
                         pf = '%s/mpsqrt(kB*T)' % (
-                                    _bar2Pa * A_site * _angstrom2m ** 2 / np.sqrt(2. * np.pi * m * _u2kg * _eV2J))
+                                _bar2Pa * A_site * _angstrom2m ** 2 / np.sqrt(2. * np.pi * m * _u2kg * _eV2J))
                         prefactor_list.append(pf)
 
                         # sanity check
@@ -1167,8 +1167,19 @@ class ReactionModel:
                     not callable(getattr(self, attr)) and
                     attr not in self._classes and
                     not inspect.ismodule(getattr(self, attr))):
-                # print(attr)
-                val = repr(getattr(self, attr))
+                if attr == 'atoms_dict':
+                    atoms_dict = getattr(self, attr)
+                    val = '{'
+                    for name in atoms_dict:
+                        val += '\'' + name + '\''
+                        val += ':'
+                        atoms = atoms_dict[name]
+                        val += 'Atoms.fromdict('
+                        val += repr(atoms.todict())
+                        val += '),'
+                    val += '}'
+                else:
+                    val = repr(getattr(self, attr))
                 new_line = ''
                 if attr not in self._pickle_attrs:
                     new_line = attr + ' = ' + val + '\n\n'
@@ -1178,9 +1189,14 @@ class ReactionModel:
                     try:
                         if 'binary_data[' not in new_line:
                             # pickled data fails since it is saved after logfile
+                            if 'Atoms' in new_line:
+                                from ase import Atoms
+                            if 'array' in new_line:
+                                from numpy import array
                             exec(new_line)
                             header += new_line
-                    except:
+                    except Exception as e:
+                        print(e)
                         self.log('header_fail', save_txt=new_line)
         return header
 
