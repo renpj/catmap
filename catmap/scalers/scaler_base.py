@@ -101,14 +101,19 @@ class ScalerBase(ReactionModelWrapper):
             self._boltzmann_coverage = cvgs
             self.output_labels['boltzmann_coverage'] = self.adsorbate_names
 
-        if set(['enthalpy', 'entropy', 'zero_point_energy']).issubset(
-                set(self.output_variables)):
+        if 'enthalpy' in self.output_variables:
+            self.thermodynamics.get_thermodynamic_corrections()
+            self._enthalpy = [self._enthalpy_dict[a] for a in ads]
+            self.output_labels['enthalpy'] = ads
+
+        if 'entropy' in self.output_variables:
+            self.thermodynamics.get_thermodynamic_corrections()
+            self._entropy = [self._entropy_dict[a] for a in ads]
+            self.output_labels['entropy'] = ads
+
+        if 'zero_point_energy' in self.output_variables:
             self.thermodynamics.get_thermodynamic_corrections()
             self._zero_point_energy = [self._zpe_dict[a] for a in ads]
-            self._enthalpy = [self._enthalpy_dict[a] for a in ads]
-            self._entropy = [self._entropy_dict[a] for a in ads]
-            self.output_labels['enthalpy'] = ads
-            self.output_labels['entropy'] = ads
             self.output_labels['zero_point_energy'] = ads
 
         if 'interaction_matrix' in self.output_variables:
