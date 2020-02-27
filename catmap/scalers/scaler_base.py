@@ -140,8 +140,14 @@ class ScalerBase(ReactionModelWrapper):
                 to be useful.')
 
     def get_thermodynamic_energies(self, **kwargs):
-        thermo_dict = self.thermodynamics.get_thermodynamic_corrections(
-            **kwargs)
+        """
+        Get the thermodynamic corrections.
+
+        :param kwargs:
+        :return: thermo_dict
+        """
+        thermo_dict = self.thermodynamics.get_thermodynamic_corrections(**kwargs)
+
         return thermo_dict
 
     def get_free_energies(self, descriptors, **kwargs):

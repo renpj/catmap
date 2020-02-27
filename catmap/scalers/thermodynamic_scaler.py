@@ -28,8 +28,18 @@ class ThermodynamicScaler(ScalerBase):
         return energy_dict
 
     def get_thermodynamic_energies(self, descriptors, **kwargs):
+        """
+        This method overrides the method in ScalerBase. It
+        synchronize all thermodynamic variables and set the pressure to
+        new value if pressure is a descriptor.
+
+        :param descriptors:
+        :param kwargs:
+        :return: thermo_dict
+        """
+
         thermo_state = {}
-        # synchronize all thermodynamic varibles
+        # synchronize all thermodynamic variables
         for var, val in zip(self.descriptor_names, descriptors):
             thermo_state[var] = val
             setattr(self, var, val)
@@ -42,14 +52,13 @@ class ThermodynamicScaler(ScalerBase):
 
         if 'pressure' in self.descriptor_names or 'logPressure' in self.descriptor_names:
             if self.pressure_mode == 'static':
-                # static pressure doesn't make sense if
-                # pressure is a descriptor
+                print('Warning: Static pressure doesn\'t make sense if pressure is a descriptor!')
+                print('Set pressure_mode to \'concentration\'.')
                 self.pressure_mode = 'concentration'
 
-        self.pressure = P
+        self.pressure = P  # Total pressure
 
-        thermo_dict = self.thermodynamics.get_thermodynamic_corrections(
-            **kwargs)
+        thermo_dict = self.thermodynamics.get_thermodynamic_corrections(**kwargs)
 
         for key in self.site_names:
             if key not in thermo_dict:

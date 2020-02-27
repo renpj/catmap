@@ -101,11 +101,11 @@ class ThermoCorrections(ReactionModelWrapper):
         """
         Calculate all `thermodynamic` corrections beyond the energies
         in the input file. This master function will call sub-functions
-        depending on the `thermo mode` of each class of species
+        depending on the `thermo mode` of each class of species.
 
         """
-        l = self.thermodynamic_corrections
-        if 'electrochemical' in l:
+        thermodynamic_corrections = self.thermodynamic_corrections
+        if 'electrochemical' in thermodynamic_corrections:
             self.force_recalculation = True
         state_dict = {}
         for v in self.thermodynamic_variables:
@@ -117,8 +117,8 @@ class ThermoCorrections(ReactionModelWrapper):
                          for v in self.thermodynamic_variables]
 
         for sp in self.species_definitions:
-            self.frequency_dict[sp] = \
-                self.species_definitions[sp].get('frequencies', [])
+            self.frequency_dict[sp] = self.species_definitions[sp].get('frequencies', [])
+
         frequency_dict = self.frequency_dict.copy()
 
         if (
@@ -148,7 +148,7 @@ class ThermoCorrections(ReactionModelWrapper):
         # if hasattr(self,'equilibrated') and self.equilibrated:
         #    self.set_equilibrated()
 
-        if 'electrochemical' in l:
+        if 'electrochemical' in thermodynamic_corrections:
             correction_dict = self._get_echem_corrections(correction_dict)
         return correction_dict
 
@@ -1204,7 +1204,7 @@ class ThermoCorrections(ReactionModelWrapper):
                 elif 'pressure' in sps_dict[sps].keys() and \
                         sps_dict[sps]['pressure'] > 0:
                     beq[atoms[atom]] += comp[atom] * (
-                                sps_dict[sps]['pressure'] / self.pressure)  # *sps_dict[sps]['pressure']/self.kBT
+                            sps_dict[sps]['pressure'] / self.pressure)  # *sps_dict[sps]['pressure']/self.kBT
                     x0[_] = sps_dict[sps]['pressure'] / self.pressure
 
         # Optimization section
