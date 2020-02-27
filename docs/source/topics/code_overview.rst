@@ -339,6 +339,13 @@ Scaler
 
    -  ``'fixed_enthalpy_entropy_adsorbate'``: based on input enthalpy, entropy, ZPE
 
+-  ``pressure_mode``: possible options are 'concentration', 'approach_to_equilibrium',
+   'static'. Default is 'concentration'.
+
+   -  ``approach_to_equilibrium``: requires ``global_reactions`` to be set, which is
+      a list of global reactions in the same syntax as elementary expressions,
+      with each one followed by its respective approach to equilibrium.
+
 Solver
 ^^^^^^
 

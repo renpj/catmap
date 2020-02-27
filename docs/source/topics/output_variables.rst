@@ -20,7 +20,6 @@ some of the more common ones are presented here below.
    these are not typically plotted on a contour plot as they are in the tutorial without manual
    adjustment to the plotting parameters.
 
-
 -  ``rate_control`` and ``selectivity_control``: see :ref:`Sensitivity analyses <ratecontrol>`
 
 -  ``production_rate``: The rate of the production of each gas phase species.  If the gas is being
@@ -34,6 +33,8 @@ some of the more common ones are presented here below.
    ``forward_rate`` and ``reverse_rate`` are the absolute values of ``rate`` corresponding to
    the overall reaction direction.  Specifically for the forward and reverse rates before they
    are summed, use ``directional_rates``.
+
+Following is the full list of output variables:
 
 +----------------------------+-----------------------+-----------+--------+
 | Name                       | Catalog               | Dimension | Module |
@@ -52,7 +53,13 @@ some of the more common ones are presented here below.
 +----------------------------+-----------------------+-----------+--------+
 | zero_point_energy          | Energy                | 1         | scaler |
 +----------------------------+-----------------------+-----------+--------+
+| interaction_matrix         | Energy                | 1         | scaler |
++----------------------------+-----------------------+-----------+--------+
+| gas_pressure               | Pressure              | 1         | scaler |
++----------------------------+-----------------------+-----------+--------+
 | coverage                   | Coverage              | 1         | solver |
++----------------------------+-----------------------+-----------+--------+
+| boltzmann_coverage         | Coverage              | 1         | scaler |
 +----------------------------+-----------------------+-----------+--------+
 | apparent_activation_energy | Energy                | 1         | solver |
 +----------------------------+-----------------------+-----------+--------+
