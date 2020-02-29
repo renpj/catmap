@@ -129,3 +129,4 @@ dmypy.json
 *.pdf
 *.pkl
 *.ipynb
+tutorials/example_network/*.png

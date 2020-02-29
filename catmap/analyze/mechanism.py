@@ -25,6 +25,7 @@ class MechanismAnalysis(MechanismPlot, ReactionModelWrapper, MapPlot):
         """
         self._rxm = reaction_model
         defaults = {'pressure_correction': True,
+                    'coverage_correction': False,
                     'min_pressure': 1e-12,
                     'energy_type': 'free_energy',
                     'include_labels': False,
