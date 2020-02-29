@@ -13,8 +13,7 @@ class ThermodynamicScaler(ScalerBase):
 
     def get_electronic_energies(self, descriptors):
         if len(self.surface_names) > 1:
-            raise IndexError('Thermodynamic scaler works only with a \
-                    single surface.')
+            raise IndexError('Thermodynamic scaler works only with a single surface.')
 
         if self.adsorbate_interaction_model not in [None, 'ideal']:
             if not getattr(self.thermodynamics.adsorbate_interactions, '_parameterized', None):

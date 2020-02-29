@@ -30,7 +30,7 @@ begin using it.
 Useful Definitions
 ------------------
 
-**(Note: symbols may not appear in Safari/IE)**
+.. note:: Symbols may not appear in Safari/IE.
 
 - descriptor - variable used to describe reaction kinetics at a high
   level. Most commonly these are the binding energies of atomic

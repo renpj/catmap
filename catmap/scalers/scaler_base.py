@@ -82,8 +82,7 @@ class ScalerBase(ReactionModelWrapper):
 
         if 'electronic_energy' in self.output_variables:
             electronic_energy_dict = self.get_electronic_energies(descriptors)
-            self._electronic_energy = [electronic_energy_dict[a]
-                                       for a in ads]
+            self._electronic_energy = [electronic_energy_dict[a] for a in ads]
             self.output_labels['electronic_energy'] = ads
 
         if 'free_energy' in self.output_variables:
