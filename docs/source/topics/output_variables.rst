@@ -20,7 +20,8 @@ some of the more common ones are presented here below.
    these are not typically plotted on a contour plot as they are in the tutorial without manual
    adjustment to the plotting parameters.
 
-   .. note:: The output for enthalpy didn\'t include the electronic energy part.
+   .. note:: The output for enthalpy didn\'t include the electronic energy part. You can get the
+       real enthalpy by ``models.get_total_enthalpies()`` function.
 
 -  ``rate_control`` and ``selectivity_control``: see :ref:`Sensitivity analyses <ratecontrol>`
 

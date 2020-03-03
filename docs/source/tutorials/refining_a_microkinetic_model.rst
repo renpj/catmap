@@ -376,8 +376,11 @@ To actually plot the free energy diagrams, we add the following lines to mkm\_jo
 This uses CatMAP's built-in automatic plotter to generate free energy diagrams for your
 defined reaction mechanisms on all surfaces by default.  For clarity, we are choosing
 to only plot a subset of these surfaces with the :code:`plot_variants=['Pt']` keyword
-argument.  For electrochemical systems using ThermodynamicScaler, plot\_variants instead
-refers to an array of voltages at which to plot free energy diagrams.  The resulting plot
+argument.  For systems using ThermodynamicScaler, plot\_variants instead
+refers to an array of descriptors at which to plot free energy diagrams, such as voltage,
+temperature and pressure. The format is a list of list, for example [[300,1],[400,1],...] where
+the descriptor names are 'temperature' and 'logPressure', which means the free energy diagram at
+the given state will be plotted. The resulting plot
 is fairly simplistic, but feel free to generate your own nicer-looking free energy diagrams
 using the dictionary provided in :code:`ma.data_dict`, which stores the values of
 free energies and barriers for each defined reaction mechanism.
@@ -387,6 +390,9 @@ free energies and barriers for each defined reaction mechanism.
 
 The resulting free energy diagram is a good way to quickly determine if the results of your
 microkinetic model match with your expectations from its free energy inputs.
+
+
+
 
 .. _ratecontrol:
 

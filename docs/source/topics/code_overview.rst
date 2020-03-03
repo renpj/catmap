@@ -164,6 +164,8 @@ ReactionModel
    Instead of specifying ``rxn_expressions`` the following attributes
    may instead be defined:
 
+.. _elementary_rxns:
+
    -  ``elementary_rxns`` - list version of ``rxn_expressions``. These will
       be automatically populated if ``rxn_expressions`` are defined.
       [list of lists of lists]
@@ -244,6 +246,41 @@ ReactionModel
    equal in length to the number of descriptors where each entry is a
    list of 2 floats (min and max for that descriptor). [list of lists
    of floats].
+
+-  ``prefactor_list`` - The exponential prefactor for each reactions. So, the list
+   should have the same length with `elementary_rxns`_. If this option is not
+   set, the default value ``['kB*T/h'] * len(elementary_rxns)`` will be used.
+   [list of str or dict]
+
+   For gas adsorption and desorption, the default prefactor should not be used. We
+   recommend the "non-activated" mode. To use this, one give the dictionary of the
+   form ``{"type": "non-activated", "A_site": [site area]}``, where type can be
+   "activated" or "non-activated" and
+   "A_site" is the "active area" for adsorption in Ang2.
+   If only having one site in the unit cell, and in lack of any further knowledge
+   of sticking coefficients, one would typically use the area of the unit
+   (e.g. for Pt(111) A_uc = 6.6528 Ang2).
+   If having two sites in the unit cell, one could use A_uc/2 for each etc.
+   If one chooses the type "activated", the rate constant reduces to the TST
+   expression if "A_site" = A_uc (A_uc needs to be defined in the mkm file as well).
+   Thus, the "activated" prefactor would only make a difference for models with
+   more than one site in the unit cell
+   (here it ensures correct normalization of the rate to the unit cell).
+
+   The example of CO oxidation from the tutorial, with (CO_oxidation_narc.mkm) and
+   without (CO_oxidation.mkm) the correct rate constant for the non-activated CO adsorption.
+   The prefactor was set for O2 adsorption to "activated"
+   (gives the same prefactor as None in this case), even if it looks like the
+   O-O TS is lower in energy than the gas phase energy of O2 for some of the metals.
+   Note that the energy input was re-tabulated in the new file "energies2.txt' to set
+   the gas phase energy of O2 and CO to 0.
+   If you compare the outputs, you can see that it only makes a very small difference
+   in this case. This is because here CO adsorption/desorption is an equilibrated
+   (not rate-determining) process.
+   However, this might not always be the case for non-activated processes.
+   Please find more info from
+   `SUNCAT-Center/catmap <https://github.com/SUNCAT-Center/catmap/pull/97#issue-93981023>`__,
+   and PRB 73, 045433 (2006); ACS Catal. 4, 2328\−2332 (2014).
 
 -  ``resolution`` - Used for mapping through descriptor space. Resolution
    used when discretizing over ``descriptor_range``. [int]
