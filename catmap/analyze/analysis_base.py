@@ -335,7 +335,8 @@ class MapPlot:
 
             plot_in = [np.linspace(*x_range + [eff_res[0]]),
                        np.linspace(*y_range + [eff_res[1]]), z, levels]
-            plot = getattr(ax, self.plot_function)(*plot_in, **plot_args)
+            if self.plot_function == 'contourf':
+                plot = getattr(ax, self.plot_function)(*plot_in, **{k: v for k, v in plot_args.items() if k is not 'title'})
 
         pos = ax.get_position()
         if self.aspect:

@@ -1060,13 +1060,14 @@ class ReactionModel:
 
         if not self.prefactor_list:
             self.prefactor_list = default_prefactor_list
-        elif isinstance(self.prefactor_list, list) and len(self.prefactor_list) == len(self.elementary_rxns):
+        elif isinstance(self.prefactor_list, list) \
+                and len(self.prefactor_list) == len(self.elementary_rxns):
             prefactor_list = []
             for prefactor, rxn in zip(self.prefactor_list, self.elementary_rxns):
-                if prefactor == None:
+                if prefactor is None:
                     prefactor_list.append(default_prefactor)
                 elif isinstance(prefactor, dict):
-                    A_site = prefactor["A_site"]
+                    A_site = prefactor["A_site"]  # site area
                     if prefactor["type"] == "non-activated":
                         # from catmap import string2symbols
                         from ase.data import atomic_masses
@@ -1091,8 +1092,10 @@ class ReactionModel:
                         _angstrom2m = 1.E-10
                         _u2kg = 1.660538921e-27
                         _eV2J = 1.602176565e-19
+                        # Hertz-Knudsen equation
                         pf = '%s/mpsqrt(kB*T)' % (
-                                _bar2Pa * A_site * _angstrom2m ** 2 / np.sqrt(2. * np.pi * m * _u2kg * _eV2J))
+                                _bar2Pa * A_site * _angstrom2m ** 2 /
+                                np.sqrt(2. * np.pi * m * _u2kg * _eV2J))
                         prefactor_list.append(pf)
 
                         # sanity check
